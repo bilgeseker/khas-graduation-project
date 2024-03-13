@@ -20,3 +20,17 @@ html {
 body {
   margin-bottom: 60px;
 }
+a.links {
+    color: #2C2D3F;
+    font-weight: 500;
+}
+
+a.dp-link{
+    background-color: #1A76D1;
+    border-radius:7px;
+}
+
+a.dp-link:hover {
+    background-color: #2C2D3F;
+    transition:all 0.2s ease;
+}
