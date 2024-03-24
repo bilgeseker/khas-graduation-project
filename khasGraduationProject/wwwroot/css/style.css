@@ -590,7 +590,7 @@ body{
 	Start Hero Area CSS
 =============================*/
 .slider .single-slider {
-	height: 600px;
+	height: 450px;
 	background-size: cover;
 	background-position: center;
 	background-repeat:no-repeat;
@@ -4170,3 +4170,8 @@ body{
 /*=========================
 	End Footer CSS
 ===========================*/
+
+.avatar-xs {
+	width: 3.6rem;
+	height: 3.6rem;
+}
