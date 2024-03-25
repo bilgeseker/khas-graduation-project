@@ -9,4 +9,10 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <ItemGroup>
+    <None Remove="Views\Patient\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Patient\" />
+  </ItemGroup>
 </Project>
