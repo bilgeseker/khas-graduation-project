@@ -13,13 +13,17 @@ namespace khasGraduationProject.Controllers
     
     public class PatientController : Controller
     {
-        // GET: /<controller>/
         public IActionResult Index()
         {
             return View();
         }
 
         public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult SignUp()
         {
             return View();
         }

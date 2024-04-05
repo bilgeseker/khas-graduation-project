@@ -44,8 +44,7 @@
     <link rel="stylesheet" href="css/responsive.css" asp-append-version="true">
 </head>
 <body>
-    @if (!Context.Request.Path.Equals("/Patient/Login", StringComparison.OrdinalIgnoreCase))
-    {
+    
         <header class="header">
             <!-- Header Inner -->
             <div class="header-inner">
@@ -94,14 +93,13 @@
             <!--/ End Header Inner -->
         </header>
         <!-- End Header Area -->
-    }
+    
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-    @if (!Context.Request.Path.Equals("/Patient/Login", StringComparison.OrdinalIgnoreCase))
-    {
+   
         <!-- Footer Area -->
         <footer id="footer" class="footer">
             <!-- Footer Top -->
@@ -133,7 +131,7 @@
             <!--/ End Copyright -->
         </footer>
         <!--/ End Footer Area -->
-    }
+    
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
