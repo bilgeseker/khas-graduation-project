@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_PatientNavbar.cshtml";
 }
-
+@model List<khasGraduationProject.Models.PatientDetails>
 <div class="container">
     <div class="row" style="display: flex; align-items: center; height: 90vh;">
         <div class="col-7" style="padding:0;">
@@ -24,6 +24,28 @@
             </form>
         </div>
     </div>
+    <table class="table table-dark table-striped" style="text-align:center;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <!-- Diğer başlık sütunları buraya eklenebilir -->
+            </tr>
+        </thead>
+        <tbody class="table-group-divider" id="myTable">
+            @foreach (var patient in Model)
+            {
+                <tr>
+                    <td>@patient.id</td>
+                    <td>@patient.name</td>
+                    <td>@patient.surname</td>
+                    <!-- Diğer veri sütunları buraya eklenebilir -->
+                </tr>
+            }
+        </tbody>
+    </table>
+
 </div>
 <style>
     span.log-title {
