@@ -7,6 +7,8 @@ namespace khasGraduationProject.Models
         public  string name { get; set; }
         public  string surname { get; set; }
         public DateTime birthday { get; set; }
+        public string email { get; set; }
+        public string password { get; set; }
         public int gender_id { get; set; }
         public int app_id { get; set; }
         public int doctor_id { get; set; }

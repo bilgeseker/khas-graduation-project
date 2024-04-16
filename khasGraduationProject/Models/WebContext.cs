@@ -10,7 +10,7 @@ namespace khasGraduationProject.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Use Azure SQL Database provider
-            optionsBuilder.UseSqlServer("Server=khasgraduationproject.database.windows.net;Database=fens402;User ID=ferihanbilge;Password=Khas2024*;Trusted_Connection=False;");
+            optionsBuilder.UseSqlServer("Server=khasgraduationproject.database.windows.net;Database=fens402;User ID=ferihanbilge;Password=Khas2024*;Trusted_Connection=False;Connection Timeout=60");
         }
     
 	}
