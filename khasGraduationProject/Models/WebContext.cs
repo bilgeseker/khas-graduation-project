@@ -6,6 +6,7 @@ namespace khasGraduationProject.Models
 	public class WebContext : DbContext
     {
 		public DbSet<PatientDetails> patients { get; set; }
+        public DbSet<DoctorDetails> doctors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

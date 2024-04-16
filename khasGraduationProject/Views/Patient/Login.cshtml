@@ -3,7 +3,6 @@
 }
 
 <div class="container">
-    @Html.ValidationSummary()
     <div class="row" style="display: flex; align-items: center; height: 90vh;">
         <div class="col-7" style="padding:0;">
             <img src="/img/pat_log.jpg" alt="#" style="max-width:100%; height:auto;" />
@@ -21,7 +20,13 @@
                 </div>
                 <p>Do not have an account?<span><a class="log-signup" id="patientSignUp" asp-area="" asp-controller="Patient" asp-action="SignUp">Sign Up</a></span></p>
 
-                <button type="submit" id="loginButton" class="btn" onclick="patientLogin()" style="background-color: #1A76D1; color:white;">Login</button>
+                <button type="submit" id="loginButton" class="btn" style="background-color: #1A76D1; color:white; margin-bottom:16px;">Login</button>
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger validation-summary-errors" role="alert">
+                        @Html.ValidationSummary()
+                    </div>
+                }
             </form>
         </div>
     </div>
@@ -54,8 +59,13 @@
         color: #1A76D1;
         padding-left: 5px;
     }
-</style>
+    .validation-summary-errors ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
 
-<script>
-   
-</script>
+        .validation-summary-errors ul li {
+            padding-left: 0; /* İsterseniz list item'ların sol boşluğunu da sıfırlayabilirsiniz */
+        }
+</style>

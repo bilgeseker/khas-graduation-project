@@ -40,29 +40,15 @@ namespace khasGraduationProject.Controllers
 
             if (user == null || !VerifyPassword(user.password, password))
             {
-                // Kullanıcı doğrulanamadı, hata mesajı dön veya tekrar login formuna yönlendir
                 ModelState.AddModelError(string.Empty, "Invalid email or password");
-                // Hata mesajlarını göstermek için ModelState.IsValid kontrolü yapılmalıdır
-                if (!ModelState.IsValid)
-                {
-                    // ModelState'deki hata mesajlarını kontrol etmek için bu kodu kullanabilirsiniz
-                    foreach (var key in ModelState.Keys)
-                    {
-                        var error = ModelState[key];
-                        // Hata mesajlarını burada kullanabilir veya hata mesajlarını loglayabilirsiniz
-                    }
-                }
-                return RedirectToAction("Login");
+                return View("Login");
             }
 
-            // Kullanıcı doğrulandı, başka bir view'e yönlendir
             return RedirectToAction("Home");
 
         }
         private bool VerifyPassword(string hashedPassword, string password)
         {
-            // Örnek: Şifre karşılaştırması yapılacaksa uygun bir algoritma kullanılmalıdır
-            // Bu örnekte doğrudan şifrelerin karşılaştırılması yapılıyor, güvenlik açısından ideal değil
             return hashedPassword == password;
         }
 
