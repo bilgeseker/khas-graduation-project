@@ -54,7 +54,11 @@ namespace khasGraduationProject.Controllers
 
         public IActionResult SignUp()
         {
-            return View();
+            using(var context = new WebContext())
+            {
+                List<States> states = context.states.ToList();
+                return View(states);
+            }
         }
     }
 }

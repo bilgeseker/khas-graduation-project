@@ -7,6 +7,7 @@ namespace khasGraduationProject.Models
     {
 		public DbSet<PatientDetails> patients { get; set; }
         public DbSet<DoctorDetails> doctors { get; set; }
+        public DbSet<States> states { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
