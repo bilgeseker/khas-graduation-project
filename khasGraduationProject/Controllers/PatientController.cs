@@ -52,6 +52,44 @@ namespace khasGraduationProject.Controllers
             return hashedPassword == password;
         }
 
+        [HttpPost]
+        public IActionResult PatientSignUp(string name, string surname, DateOnly birthday, int gender_id,
+            string email, string password, int location_id)
+        {
+            using(var context = new WebContext())
+            {
+                var user = context.patients.FirstOrDefault(u => u.email == email);
+                if (user == null)
+                {
+                    DateTime now = DateTime.Now;
+                    DateTime dateTimeWithNowTime = new DateTime(birthday.Year, birthday.Month, birthday.Day, now.Hour, now.Minute, now.Second);
+
+                    var newPatient = new PatientDetails
+                    {
+                        name = name,
+                        surname = surname,
+                        birthday = dateTimeWithNowTime,
+                        gender_id = gender_id,
+                        email = email,
+                        password = password,
+                        location_id = location_id,
+                        app_id = 0,
+                        doctor_id = 0
+                    };
+                    context.patients.Add(newPatient);
+                    context.SaveChanges();
+
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "The user exist!!");
+                    List<States> states = context.states.ToList();
+                    return View("SignUp", states);
+                }
+                return RedirectToAction("Home");
+            }
+        }
+
         public IActionResult SignUp()
         {
             using(var context = new WebContext())

@@ -1,10 +1,10 @@
 ﻿@{
-    Layout = "~/Views/Shared/_PatientNavbar.cshtml";
+    Layout = "~/Views/Shared/_SignUpLoginNav.cshtml";
 }
 @model List<States>
 <div class="signup" style="background-image:url('/img/slider1.jpg');">
     <div class="signup_wrap">
-        <form>
+        <form asp-controller="Patient" asp-action="PatientSignUp" method="post" onsubmit="return validateForm()">
             <div class="row g-3 align-items-center mb-5">
                 <div class="col-auto" style="margin:auto;">
                     <span style="font-size: 30px; font-weight: bold; color: #5ba6f2;">Patient Sign Up</span>
@@ -16,7 +16,7 @@
                     <label for="inputName" class="col-form-label">Name: </label>
                 </div>
                 <div class="col-9">
-                    <input type="text" id="inputName" class="form-control signup_input" aria-describedby="name">
+                    <input type="text" id="name" name="name" class="form-control signup_input" aria-describedby="name">
                 </div>
             </div>
             <div class="row g-3 align-items-center mb-3">
@@ -24,7 +24,7 @@
                     <label for="inputSurname" class="col-form-label">Surname: </label>
                 </div>
                 <div class="col-9">
-                    <input type="text" id="inputSurname" class="form-control signup_input" aria-describedby="surname">
+                    <input type="text" id="surname" name="surname" class="form-control signup_input" aria-describedby="surname">
                 </div>
             </div>
             <div class="row g-3 align-items-center mb-3">
@@ -32,7 +32,7 @@
                     <label for="inputBirthday" class="col-form-label">Birthday: </label>
                 </div>
                 <div class="col-9">
-                    <input type="date" id="inputBirthday" class="form-control" min="1950-01-01" max="2024-05-31">
+                    <input type="date" id="birthday" name="birthday" class="form-control" required pattern="\d{4}-\d{2}-\d{2}" min="1950-01-01" max="2019-05-31">
 
                 </div>
             </div>
@@ -42,16 +42,16 @@
                 </div>
                 <div class="col-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="1">
-                        <label class="form-check-label" for="radioFemale">
+                        <input class="form-check-input" type="radio" name="gender_id" id="1" value="1">
+                        <label class="form-check-label" for="female">
                             Female
                         </label>
                     </div>
                 </div>
                 <div class="col-5">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="gender" id="2">
-                        <label class="form-check-label" for="radioMale">
+                        <input class="form-check-input" type="radio" name="gender_id" id="2" value="2">
+                        <label class="form-check-label" for="male">
                             Male
                         </label>
                     </div>
@@ -62,15 +62,18 @@
                     <label for="inputMail" class="col-form-label">Mail: </label>
                 </div>
                 <div class="col-9">
-                    <input type="email" id="inputMail" class="form-control signup_input" aria-describedby="mail">
+                    <input type="email" id="email" name="email" class="form-control signup_input" aria-describedby="mail">
                 </div>
             </div>
             <div class="row g-3 align-items-center mb-3">
                 <div class="col-3">
                     <label for="inputPassword" class="col-form-label">Password: </label>
                 </div>
-                <div class="col-9">
-                    <input type="password" id="inputPassword" class="form-control signup_input" aria-describedby="password">
+                <div class="col-8">
+                    <input type="password" id="password" name="password" class="form-control signup_input" aria-describedby="password">
+                </div>
+                <div class="col-1">
+                    <span><i id="togglePassword" class="far fa-eye-slash" onclick="togglePassword()"></i></span>
                 </div>
             </div>
             <div class="row g-3 align-items-center mb-5">
@@ -78,7 +81,7 @@
                     <label for="inputState" class="col-form-label">State: </label>
                 </div>
                 <div class="col-9">
-                    <select class="form-select">
+                    <select class="form-select"  name="location_id" id="inputState">
                         @foreach (var state in Model)
                         {
                             <option value="@state.id">@state.name</option>
@@ -93,7 +96,16 @@
                     <input class="btn btn-primary" type="submit" value="Submit" style="width:fit-content;">
                 </div>
             </div>
-
+            <div class="row g-3 align-items-end mb-3">
+                <div class="col-12">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger validation-summary-errors" role="alert">
+                            @Html.ValidationSummary()
+                        </div>
+                    }
+                </div>
+            </div>
         </form>
     </div>
 </div>
@@ -113,6 +125,7 @@
         position: relative;
         z-index: 1;
     }
+
         .signup::before {
             content: "";
             display: block;
@@ -124,6 +137,7 @@
             top: 0;
             left: 0;
         }
+
     .signup_wrap {
         width: 600px;
         border-radius: 10px;
@@ -135,16 +149,102 @@
         justify-content: center;
         align-items: center;
     }
+
     .signup_input {
         font-family: Poppins-Regular;
         font-size: 16px;
         line-height: 1.2;
         display: block;
-        color:black;
-        width:100%;
+        color: black;
+        width: 100%;
         height: 45px;
         background: 0 0;
         padding: 0 5px 0 10px;
     }
-    
+
+    .validation-summary-errors ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .validation-summary-errors ul li {
+            padding-left: 0;
+        }
 </style>
+
+<script>
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var surname = document.getElementById('surname').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var gender = document.querySelector('input[name="gender_id"]:checked');
+
+        if (name.trim() === '') {
+            alert('Name field cannot be empty!');
+            return false;
+        }
+
+        if (surname.trim() === '') {
+            alert('Surname field cannot be empty!');
+            return false;
+        }
+        if (email.trim() === '') {
+            alert('Email field cannot be empty!');
+            return false;
+        }
+        if (password.trim() === '') {
+            alert('Password field cannot be empty!');
+            return false;
+        }
+        if (!gender) {
+            alert('Please select your gender!');
+            return false;
+        }
+
+        var checkedPass = validatePassword(password);
+        if (!checkedPass) {
+            alert('The password must be at least 8 characters and contain at least 1 uppercase letter, 1 number and 1 special character.');
+            return false;
+        }
+
+        return true;
+    }
+    function validatePassword(password) {
+        if (password.length < 8) {
+            return false;
+        }
+
+        var uppercaseRegex = /[A-Z]/;
+        if (!uppercaseRegex.test(password)) {
+            return false;
+        }
+
+        var digitRegex = /[0-9]/;
+        if (!digitRegex.test(password)) {
+            return false;
+        }
+
+        var specialCharacterRegex = /[!@@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (!specialCharacterRegex.test(password)) {
+            return false;
+        }
+
+        return true;
+    }
+    function togglePassword() {
+        var passwordInput = document.getElementById("password");
+        var eyeIcon = document.getElementById("togglePassword");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        }
+    }
+
+</script>
