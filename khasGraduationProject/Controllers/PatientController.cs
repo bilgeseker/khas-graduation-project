@@ -24,7 +24,11 @@ namespace khasGraduationProject.Controllers
             ViewBag.userId = userId;
             return View();
         }
-        
+
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         public ActionResult Login()
         {
