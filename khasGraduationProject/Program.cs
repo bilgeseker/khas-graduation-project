@@ -2,6 +2,9 @@
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 
 var app = builder.Build();
 
@@ -13,8 +16,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 
@@ -26,3 +32,26 @@ app.MapControllerRoute(
 
 app.Run();
 
+namespace khasGraduationProject
+{
+    public class Program
+    {
+        public void Configure(IApplicationBuilder app)
+        {
+            // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        }
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc()
+                .AddSessionStateTempDataProvider();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+        }
+
+        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        {
+            app.UseSession();
+            app.UseMvcWithDefaultRoute();
+        }
+    }
+}

@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Meta Tags -->
@@ -43,17 +42,61 @@
     <link rel="stylesheet" href="css/normalize.css" asp-append-version="true">
     <link rel="stylesheet" href="css/style.css" asp-append-version="true">
     <link rel="stylesheet" href="css/responsive.css" asp-append-version="true">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">   <!-- Header Inner -->
 </head>
 <body>
+    <header class="header">
+       
+        <div class="header-inner">
+            <div class="container">
+                <div class="inner">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-12">
+                            <!-- Start Logo -->
+                            <div class="logo">
+                                <a href="home">
+                                    <img src="img/logo.png" alt="#">
+                                </a>
+                            </div>
+                            <!-- End Logo -->
+                            <!-- Mobile Nav -->
+                            <div class="mobile-nav"></div>
+                            <!-- End Mobile Nav -->
+                        </div>
+                        <div class="col-lg-6 col-md-9 col-12">
+                            <!-- Main Menu -->
+                            <div class="main-menu">
+                                <nav class="navigation">
+                                    <ul class="nav menu">
+                                        <li class="active">
+                                            <a asp-area="" asp-controller="Patient" asp-action="Home">Home</a>
+                                        </li>
+                                        <li><a >Doctors</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!--/ End Main Menu -->
+                        </div>
+                        <div class="col-lg-3 col-12">
+                            <div class="get-quote">
+                                <a asp-area="" asp-controller="Patient" asp-action="Logout" class="btn">Log Out</a>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ End Header Inner -->
+    </header>
+    <!-- End Header Area -->
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
     <footer>
     </footer>
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

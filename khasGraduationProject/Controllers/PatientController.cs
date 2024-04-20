@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using khasGraduationProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -17,8 +20,12 @@ namespace khasGraduationProject.Controllers
     {
         public ActionResult Home()
         {
+            var userId = HttpContext.Session.GetString("userId");
+            ViewBag.userId = userId;
             return View();
         }
+        
+
         public ActionResult Login()
         {
             //using (var context = new WebContext())
@@ -32,6 +39,16 @@ namespace khasGraduationProject.Controllers
             return View();
         }
 
+        public string HashPass(string password)
+        {
+
+            byte[] encodedPassword = new UTF8Encoding().GetBytes(password);
+            byte[] hash = ((HashAlgorithm)CryptoConfig.CreateFromName("MD5")).ComputeHash(encodedPassword);
+            string encoded = BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
+
+            return encoded;//returns hashed version of password
+        }
+
         [HttpPost]
         public IActionResult Authenticate(string email, string password)
         {
@@ -43,14 +60,23 @@ namespace khasGraduationProject.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid email or password");
                 return View("Login");
             }
-
+            HttpContext.Session.SetString("userId", user.id.ToString());
             return RedirectToAction("Home");
 
         }
-        private bool VerifyPassword(string hashedPassword, string password)
+        private bool VerifyPassword(string password, string inputPassword)
         {
-            return hashedPassword == password;
+
+            var hashedPass = HashPass(inputPassword);
+            return password == hashedPass;
         }
+
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
 
         [HttpPost]
         public IActionResult PatientSignUp(string name, string surname, DateOnly birthday, int gender_id,
@@ -63,7 +89,8 @@ namespace khasGraduationProject.Controllers
                 {
                     DateTime now = DateTime.Now;
                     DateTime dateTimeWithNowTime = new DateTime(birthday.Year, birthday.Month, birthday.Day, now.Hour, now.Minute, now.Second);
-
+                    var hashedPass = HashPass(password);
+                   
                     var newPatient = new PatientDetails
                     {
                         name = name,
@@ -71,7 +98,7 @@ namespace khasGraduationProject.Controllers
                         birthday = dateTimeWithNowTime,
                         gender_id = gender_id,
                         email = email,
-                        password = password,
+                        password = hashedPass,
                         location_id = location_id,
                         app_id = 0,
                         doctor_id = 0
@@ -86,7 +113,7 @@ namespace khasGraduationProject.Controllers
                     List<States> states = context.states.ToList();
                     return View("SignUp", states);
                 }
-                return RedirectToAction("Home");
+                return RedirectToAction("Login");
             }
         }
 
