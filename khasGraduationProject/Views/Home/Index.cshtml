@@ -2,8 +2,6 @@
     ViewData["Title"] = "Home Page";
 }
 
- 
-
 <!-- Slider Area -->
 <section class="slider mt-4">
     <div class="hero-slider">
@@ -108,25 +106,19 @@
 <div id="fun-facts" class="fun-facts section overlay">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-3 col-md-6 col-12">
+            <div class="col-lg-3 col-md-6 col-12" style="text-align: center;">
                 <!-- Start Single Fun -->
                 <div class="single-fun">
-                    <i class="icofont icofont-user-alt-3"></i>
-                    <div class="content">
-                        <span class="counter"> COUNT </span>
-                        <p>Doctors</p>
-                    </div>
+                    <span class="counter"> @ViewBag.doctorCount </span>
+                    <span>Doctors</span>
                 </div>
                 <!-- End Single Fun -->
             </div>
-            <div class="col-lg-3 col-md-6 col-12">
+            <div class="col-lg-3 col-md-6 col-12" style="text-align: center;">
                 <!-- Start Single Fun -->
                 <div class="single-fun">
-                    <i class="icofont-simple-smile"></i>
-                    <div class="content">
-                        <span class="counter"> COUNT </span>
-                        <p>Patients</p>
-                    </div>
+                    <span class="counter"> @ViewBag.patientCount </span>
+                    <span>Patients</span>
                 </div>
                 <!-- End Single Fun -->
             </div>

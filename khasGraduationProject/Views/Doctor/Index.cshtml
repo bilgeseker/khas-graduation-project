@@ -2,12 +2,11 @@
     ViewData["Title"] = "Doctor";
     Layout = "~/Views/Shared/_DoctorNavbar.cshtml";
 }
-@* @model DoctorDetails *@
+
 @model dynamic
 
 <div class="card mb-4 mt-5">
     <h5 class="card-header">Doctor Profile</h5>
-    <!-- Account -->
     <div class="card-body">
         <div class="d-flex align-items-start align-items-sm-center gap-4">
             <img src="~/img/author1.jpg" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
@@ -147,7 +146,6 @@
             </div>
         </form>
     </div>
-    <!-- /Account -->
 </div>
 
 <script>

@@ -78,7 +78,7 @@ namespace khasGraduationProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult DoctorSaveChanges(string name, string surname, string email, string password,
+        public IActionResult PatientSaveChanges(string name, string surname, string email, string password,
            string phone, string states, string gender, string specialization)
         {
             using (var context = new WebContext())

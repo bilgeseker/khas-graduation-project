@@ -15,6 +15,13 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        var context = new WebContext();
+        var patient = context.patients.ToList().Count();
+        var doctor = context.doctors.ToList().Count();
+
+        ViewBag.patientCount = patient;
+        ViewBag.doctorCount = doctor;
+
         return View();
     }
 

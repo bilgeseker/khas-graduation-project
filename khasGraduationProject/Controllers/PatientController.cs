@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -27,7 +28,28 @@ namespace khasGraduationProject.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var userId = HttpContext.Session.GetString("userId");
+
+            if (userId == null)
+            {
+                return View("Login");
+            }
+            else
+            {
+                var context = new WebContext();
+                var patient = context.patients.FirstOrDefault(u => u.id == Convert.ToInt32(userId));
+
+                var states = context.states.ToList();
+             
+                var gender = context.gender.ToList();
+
+                dynamic myModel = new ExpandoObject();
+                myModel.Patient = patient;  
+                myModel.States = states;                
+                myModel.Gender = gender;
+
+                return View(myModel);
+            }            
         }
 
         public ActionResult Login()
@@ -65,7 +87,7 @@ namespace khasGraduationProject.Controllers
                 return View("Login");
             }
             HttpContext.Session.SetString("userId", user.id.ToString());
-            return RedirectToAction("Home");
+            return RedirectToAction("Index");
 
         }
         private bool VerifyPassword(string password, string inputPassword)
@@ -129,6 +151,62 @@ namespace khasGraduationProject.Controllers
                 return View(states);
             }
         }
+
+
+        [HttpPost]
+        public IActionResult PatientSaveChanges(string name, string surname, string email, string password,
+           DateTime birthday, string states, string gender)
+        {
+            using (var context = new WebContext())
+            {
+                var user = context.patients.FirstOrDefault(u => u.id == Convert.ToInt32(HttpContext.Session.GetString("userId")));
+
+                if (user != null)
+                {
+                    if (!user.name.Equals(name))
+                    {
+                        user.name = name;
+                    }
+
+                    if (!user.surname.Equals(surname))
+                    {
+                        user.surname = surname;
+                    }
+
+                    if (!user.email.Equals(email))
+                    {
+                        user.email = email;
+                    }
+
+                    if (!user.password.Equals(password))
+                    {
+                        user.password = HashPass(password);
+                    }
+
+                    if (!user.birthday.Equals(birthday))
+                    {
+                        user.birthday = birthday;
+                    }
+
+                    if (!user.location_id.Equals(Convert.ToInt32(states)))
+                    {
+                        user.location_id = Convert.ToInt32(states);
+                    }
+
+                    if (!user.gender_id.Equals(Convert.ToInt32(gender)))
+                    {
+                        user.gender_id = Convert.ToInt32(gender);
+                    }
+
+                    context.patients.Update(user);
+                    context.SaveChanges();
+                }
+
+                return RedirectToAction("Index");
+            }
+        }
+
+
     }
 }
 

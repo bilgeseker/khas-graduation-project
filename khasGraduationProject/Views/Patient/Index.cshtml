@@ -1,10 +1,12 @@
 ﻿@{
+    Layout = "~/Views/Shared/_PatientNavbar.cshtml";
     ViewData["Title"] = "Patient";
 }
 
+@model dynamic
+
 <div class="card mb-4 mt-5">
     <h5 class="card-header">Patient Profile</h5>
-    <!-- Account -->
     <div class="card-body">
         <div class="d-flex align-items-start align-items-sm-center gap-4">
             <img src="~/img/author1.jpg" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
@@ -25,20 +27,20 @@
     </div>
     <hr class="my-0">
     <div class="card-body">
-        <form id="formAccountSettings" method="post" onsubmit="return false">
+        <form id="formPatientSettings" asp-controller="Patient" asp-action="PatientSaveChanges" method="post" onsubmit="return validateForm()">
             <div class="row">
                 <div class="mb-3 col-md-6">
                     <label for="firstName" class="form-label">First Name</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-user-doctor"></i></span>
-                        <input class="form-control" type="text" id="firstName" name="firstName" value="Lily" autofocus="">
+                        <input class="form-control" type="text" id="name" name="name" value="@Model.Patient.name" autofocus="">
                     </div>
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="lastName" class="form-label">Last Name</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-user-doctor"></i></span>
-                        <input class="form-control" type="text" name="lastName" id="lastName" value="Alberta">
+                        <input class="form-control" type="text" name="surname" id="surname" value="@Model.Patient.surname">
                     </div>
                 </div>
 
@@ -46,7 +48,7 @@
                     <label for="email" class="form-label">E-mail</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                        <input class="form-control" type="text" id="email" name="email" value="john.doe@example.com" placeholder="john.doe@example.com">
+                        <input class="form-control" type="text" id="email" name="email" value="@Model.Patient.email" >
                     </div>
                 </div>
 
@@ -54,7 +56,7 @@
                     <label for="email" class="form-label">Password</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                        <input class="form-control" type="text" id="password_id" name="password" value="" placeholder="*********">
+                        <input class="form-control" type="password" id="password" name="password" value="@Model.Patient.password">
                     </div>
                 </div>
 
@@ -62,80 +64,54 @@
                 <div class="mb-3 col-md-6">
                     <label class="form-label" for="phoneNumber">Birthday</label>
                     <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-solid fa-cake-candles"></i></i></span>
-                        <input type="date" id="bday_id" name="bday" class="form-control" placeholder="01-03-1987">
+                        <span class="input-group-text"><i class="fa-solid fa-cake-candles"></i></span>
+                        <input class="form-control" type="date" id="birthday" name="birthday" required pattern="\d{4}-\d{2}-\d{2}" value="@Model.Patient.birthday.ToString("yyyy-MM-dd")">
                     </div>
-                </div>
+                </div>         
 
-                <div class="mb-3 col-md-6">
-                    <label class="form-label" for="phoneNumber">Phone Number</label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-solid fa-phone"></i></i></span>
-                        <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="202 555 0111">
-                    </div>
-                </div>
+           
 
-                <div class="mb-3 col-md-6">
-                    <label class="form-label" for="country">Country</label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-solid fa-earth-americas"></i></span>
-                        <select id="country" class="form-select">
-                            <option value="">Select</option>
-                            <option value="1">Australia</option>
-                            <option value="2">Bangladesh</option>
-                        </select>
-                    </div>
-                </div>
+
                 <div class="mb-3 col-md-6">
                     <label class="form-label" for="country">City</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-earth-americas"></i></span>
-                        <select id="country" class="form-select">
-                            <option value="">Select</option>
-                            <option value="1">State 2</option>
-                            <option value="2">State 2</option>
+                        <select id="states" name="states" class="form-select">
+                            @foreach (var state in Model.States)
+                            {
+                                if (@state.id == @Model.Patient.location_id)
+                                {
+                                    <option selected="selected" value="@state.id">@state.name</option>
+                                }
+                                else
+                                {
+                                    <option value="@state.id"> @state.name </option>
+                                }
+                            }
                         </select>
                     </div>
                 </div>
+                
                 <div class="mb-3 col-md-6">
-                    <label for="address" class="form-label">Address</label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="Address">
-                    </div>
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="zipCode" class="form-label">Zip Code</label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-brands fa-usps"></i></span>
-                        <input type="text" class="form-control" id="zipCode" name="zipCode" placeholder="231465" maxlength="6">
-                    </div>
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="language" class="form-label">Gender</label>
+                    <label for="gender" class="form-label">Gender</label>
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-venus-mars"></i></span>
-                        <select id="language" class="select2 form-select">
-                            <option value="">Select Gender</option>
-                            <option value="1">Male</option>
-                            <option value="2">Female</option>
+                        <select id="gender" name="gender" class="select2 form-select">
+                            @foreach (var gender in Model.Gender)
+                            {
+                                if (@gender.id == @Model.Patient.gender_id)
+                                {
+                                    <option selected="selected" value="@gender.id">@gender.name</option>
+                                }
+                                else
+                                {
+                                    <option value="@gender.id"> @gender.name </option>
+                                }
+                            }
                         </select>
                     </div>
-                </div>
-                @* <div class="mb-3 col-md-6">
-                    <label for="timeZones" class="form-label">Specialization</label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-solid fa-stethoscope"></i></span>
-                        <select id="timeZones" class="select2 form-select">
-                            <option value="">Select Timezone</option>
-                            <option value="1">Specialization 1</option>
-                            <option value="2">Specialization 2</option>
-                        </select>
-                    </div>
-                </div> *@
-            </div>
-
-       
+                </div>              
+            </div>       
 
             <div class="mt-2">
                 <button type="submit" class="btn btn-primary">Save changes</button>
@@ -143,5 +119,72 @@
             </div>
         </form>
     </div>
-    <!-- /Account -->
 </div>
+
+<script>
+
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var surname = document.getElementById('surname').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var birthday = document.getElementById('birthday').value;
+
+        if (name.trim() === '') {
+            alert('Name field cannot be empty!');
+            return false;
+        }
+
+        if (surname.trim() === '') {
+            alert('Surname field cannot be empty!');
+            return false;
+        }
+        if (email.trim() === '') {
+            alert('Email field cannot be empty!');
+            return false;
+        }
+        if (password.trim() === '') {
+            alert('Password field cannot be empty!');
+            return false;
+        }
+
+        if (birthday.trim() === '') {
+            alert('Birthday field cannot be empty!');
+            return false;
+        }
+
+        /*
+        var checkedPass = validatePassword(password);
+        if (!checkedPass) {
+            alert('The password must be at least 8 characters and contain at least 1 uppercase letter, 1 number and 1 special character.');
+            return false;
+        }
+        */
+
+        return true;
+    }
+
+    function validatePassword(password) {
+        if (password.length < 8) {
+            return false;
+        }
+
+        var uppercaseRegex = /[A-Z]/;
+        if (!uppercaseRegex.test(password)) {
+            return false;
+        }
+
+        var digitRegex = /[0-9]/;
+        if (!digitRegex.test(password)) {
+            return false;
+        }
+
+        var specialCharacterRegex = /[!@@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (!specialCharacterRegex.test(password)) {
+            return false;
+        }
+
+        return true;
+    }
+
+</script>
