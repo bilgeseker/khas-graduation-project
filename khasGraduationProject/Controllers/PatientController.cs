@@ -87,7 +87,7 @@ namespace khasGraduationProject.Controllers
                 return View("Login");
             }
             HttpContext.Session.SetString("userId", user.id.ToString());
-            return RedirectToAction("Index");
+            return RedirectToAction("Home");
 
         }
         private bool VerifyPassword(string password, string inputPassword)

@@ -68,10 +68,11 @@
                             <div class="main-menu">
                                 <nav class="navigation">
                                     <ul class="nav menu">
-                                        <li class="active">
+                                        <li>
                                             <a asp-area="" asp-controller="Patient" asp-action="Home">Home</a>
                                         </li>
-                                        <li><a >Doctors</a></li>
+                                        <li><a>Doctors</a></li>
+                                        <li><a asp-area="" asp-controller="Patient" asp-action="Index">Profile</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -81,8 +82,6 @@
                             <div class="get-quote">
                                 <a asp-area="" asp-controller="Patient" asp-action="Logout" class="btn">Log Out</a>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
