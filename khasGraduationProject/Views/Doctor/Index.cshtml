@@ -5,29 +5,24 @@
 
 @model dynamic
 
-<div class="card mb-4 mt-5">
-    <h5 class="card-header">Doctor Profile</h5>
-    <div class="card-body">
-        <div class="d-flex align-items-start align-items-sm-center gap-4">
-            <img src="~/img/author1.jpg" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
-            <div class="button-wrapper">
-                <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
-                    <span class="d-none d-sm-block">Upload new photo</span>
-                    <i class="bx bx-upload d-block d-sm-none"></i>
-                    <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
-                </label>
-                <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
-                    <i class="bx bx-reset d-block d-sm-none"></i>
-                    <span class="d-none d-sm-block">Reset</span>
-                </button>
-
-                <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+<form id="formDoctorSettings" asp-controller="Doctor" asp-action="DoctorSaveChanges" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <div class="card mb-4 mt-5">
+        <h5 class="card-header">Doctor Profile</h5>
+        <div class="card-body">
+            <div class="d-flex align-items-start align-items-sm-center gap-4">
+                <img src="@Model.Doctor.profileImgPath" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+                <div class="button-wrapper">
+                    <label for="files" class="btn btn-primary me-2 mb-4" tabindex="0">
+                        <span class="d-none d-sm-block">Upload new photo</span>
+                        <i class="bx bx-upload d-block d-sm-none"></i>
+                        <input type="file" id="files" name="files" class="account-file-input" hidden="" accept="image/png, image/jpeg" />
+                    </label>
+                    <p class="text-muted mb-0">Allowed JPG or PNG.</p>
+                </div>
             </div>
         </div>
-    </div>
-    <hr class="my-0">
-    <div class="card-body">
-        <form id="formDoctorSettings" asp-controller="Doctor" asp-action="DoctorSaveChanges" method="post" onsubmit="return validateForm()">
+        <hr class="my-0">
+        <div class="card-body">
             <div class="row">
                 <div class="mb-3 col-md-6">
                     <label for="firstName" class="form-label">First Name</label>
@@ -41,11 +36,11 @@
                     <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-user-doctor"></i></span>
                         <input class="form-control" type="text" name="surname" id="surname" value="@Model.Doctor.surname">
-                    </div>                   
+                    </div>
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="email" class="form-label">E-mail</label>
-                     <div class="input-group input-group-merge">
+                    <div class="input-group input-group-merge">
                         <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
                         <input class="form-control" type="text" id="email" name="email" value="@Model.Doctor.email">
                     </div>
@@ -60,21 +55,11 @@
                 <div class="mb-3 col-md-6">
                     <label class="form-label" for="phoneNumber">Phone Number</label>
                     <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-solid fa-phone"></i></i></span>                        
+                        <span class="input-group-text"><i class="fa-solid fa-phone"></i></i></span>
                         <input type="text" id="phone" name="phone" class="form-control" value="@Model.Doctor.phone">
                     </div>
                 </div>
-               @*  <div class="mb-3 col-md-6">
-                    <label class="form-label" for="country">Country</label>
-                    <div class="input-group input-group-merge">
-                        <span class="input-group-text"><i class="fa-solid fa-earth-americas"></i></span>
-                        <select id="country" class="form-select">
-                            <option value="">Select</option>
-                            <option value="1">Australia</option>
-                            <option value="2">Bangladesh</option>
-                        </select>
-                    </div>
-                </div> *@
+
                 <div class="mb-3 col-md-6">
                     <label class="form-label" for="country">City</label>
                     <div class="input-group input-group-merge">
@@ -85,7 +70,7 @@
                                 if (@state.id == @Model.Doctor.states_id)
                                 {
                                     <option selected="selected" value="@state.id">@state.name</option>
-                                } 
+                                }
                                 else
                                 {
                                     <option value="@state.id"> @state.name </option>
@@ -100,7 +85,7 @@
                         <span class="input-group-text"><i class="fa-solid fa-location-dot"></i></span>
                         <input type="text" class="form-control" id="address" name="address" value="@Model.Doctor.address" placeholder="Address">
                     </div>
-                </div>         
+                </div>
                 <div class="mb-3 col-md-6">
                     <label for="language" class="form-label">Gender</label>
                     <div class="input-group input-group-merge">
@@ -144,9 +129,10 @@
                 <button type="submit" class="btn btn-primary">Save changes</button>
                 <button type="reset" class="btn btn-outline-secondary">Cancel</button>
             </div>
-        </form>
+
+        </div>
     </div>
-</div>
+</form>
 
 <script>
 

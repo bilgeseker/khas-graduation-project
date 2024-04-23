@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Patient\" />
+    <Folder Include="wwwroot\profileImages\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />

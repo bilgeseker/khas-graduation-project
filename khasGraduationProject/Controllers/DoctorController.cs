@@ -8,6 +8,13 @@ namespace khasGraduationProject.Controllers
 {
     public class DoctorController : Controller
     {
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
+        public DoctorController(IWebHostEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetString("userId");
@@ -78,8 +85,8 @@ namespace khasGraduationProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult PatientSaveChanges(string name, string surname, string email, string password,
-           string phone, string states, string gender, string specialization)
+        public IActionResult DoctorSaveChanges(string name, string surname, string email, string password,
+           string phone, string states, string gender, string specialization, IFormFile files)
         {
             using (var context = new WebContext())
             {
@@ -127,12 +134,44 @@ namespace khasGraduationProject.Controllers
                         user.specialization_id = Convert.ToInt32(specialization);
                     }
 
+                    if (files != null && files.Length > 0)
+                    {
+                        try
+                        {
+                            // wwwroot klasörünün fiziksel yolu
+                            var webRootPath = _hostingEnvironment.WebRootPath;
+
+                            // Dosyanın kaydedileceği yol
+                            var filePath = Path.Combine(webRootPath, "profileImages", files.FileName);
+
+                            // Dosyanın var olup olmadığını kontrol et
+                            if (!System.IO.File.Exists(filePath))
+                            {
+                                // Dosyayı wwwroot klasörüne kaydet
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    files.CopyTo(stream);
+                                }
+                            }
+
+                            if (!user.profileImgPath.Equals(Path.Combine("profileImages", files.FileName)))
+                            {
+                                user.profileImgPath = Path.Combine("profileImages", files.FileName);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Hata durumunda uygun yanıtı döndür
+                            return StatusCode(500, $"Internal server error: {ex.Message}");
+                        }
+                    }
+
                     context.doctors.Update(user);
                     context.SaveChanges();
                 }
 
                 return RedirectToAction("Index");
             }
-        }
+        }  
     }
 }

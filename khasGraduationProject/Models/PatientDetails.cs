@@ -19,7 +19,9 @@ namespace khasGraduationProject.Models
         public int app_id { get; set; }
         public int doctor_id { get; set; }
         public int location_id { get; set; }
-        
-	}
+        public string profileImgPath { get; set; }
+
+
+    }
 }
 
