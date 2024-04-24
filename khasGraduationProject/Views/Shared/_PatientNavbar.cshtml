@@ -43,6 +43,7 @@
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">   <!-- Header Inner -->
+    
 </head>
 <body>
     <header class="header">
@@ -71,7 +72,7 @@
                                         <li>
                                             <a asp-area="" asp-controller="Patient" asp-action="Home">Home</a>
                                         </li>
-                                        <li><a>Doctors</a></li>
+                                        <li><a asp-area="" asp-controller="Patient" asp-action="Doctors">Doctors</a></li>
                                         <li><a asp-area="" asp-controller="Patient" asp-action="Index">Profile</a></li>
                                     </ul>
                                 </nav>

@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "~/Views/Shared/_PatientNavbar.cshtml";
+    ViewData["Title"] = "Doctors";
+}
+<div class="row mt-5">
+    <div class="col-sm-4 mb-4">
+        <div class="card doctor-card">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Special title treatment</h5>
+                <p class="card-text mb-3">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">See Schedule</a>
+                <div class="schedule d-none mt-4">
+                    <p>Doctor 1's schedule:</p>
+                    <ul>
+                        <li>Monday: 9 AM - 5 PM</li>
+                        <li>Tuesday: 10 AM - 6 PM</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 mb-4">
+        <div class="card doctor-card">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Special title treatment</h5>
+                <p class="card-text mb-3">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">See Schedule</a>
+                <div class="schedule d-none mt-4">
+                    <p>Doctor 2's schedule:</p>
+                    <input type="date" id="datepicker">
+                    <select id="appointmentTime">
+                        <option value="09:00">09:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="18:00">18:00</option>
+                    </select>
+
+                    <p id="appointmentStatus"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 mb-4">
+        <div class="card doctor-card">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Special title treatment</h5>
+                <p class="card-text mb-3">With supporting text below as a natural lead-in to additional content.</p>
+                <a href="#" class="btn btn-primary">See Schedule</a>
+                <div class="schedule d-none mt-4">
+                    <p>Doctor 3's schedule:</p>
+                    <ul>
+                        <li>Thursday: 9 AM - 5 PM</li>
+                        <li>Friday: 10 AM - 6 PM</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.doctor-card').click(function (e) {
+            e.stopPropagation(); // Tıklamayı durdur
+            $(this).find('.schedule').toggleClass('d-none');
+            $('.doctor-card').not($(this)).find('.schedule').addClass('d-none');
+        });
+
+        // Datepicker ve appointmentTime öğeleri üzerindeki tıklamaları durdur
+        $('#datepicker, #appointmentTime').click(function (e) {
+            e.stopPropagation(); // Tıklamayı durdur
+        });
+
+        // Dökümanın herhangi bir yerine tıklandığında schedule penceresini kapat
+        $(document).click(function (e) {
+            // Tıklanan öğe schedule penceresi veya içeriğinin bir parçası ise kapatma
+            if (!$(e.target).closest('.schedule').length) {
+                $('.schedule').addClass('d-none');
+            }
+        });
+
+
+    });
+    
+</script>

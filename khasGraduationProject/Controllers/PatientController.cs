@@ -33,6 +33,12 @@ namespace khasGraduationProject.Controllers
             return View();
         }
 
+        public ActionResult Doctors()
+        {
+            
+            return View();
+        }
+
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetString("userId");
