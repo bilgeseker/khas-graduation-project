@@ -35,8 +35,11 @@ namespace khasGraduationProject.Controllers
 
         public ActionResult Doctors()
         {
-            
-            return View();
+            using (var context = new WebContext())
+            {
+                List<States> states = context.states.ToList();
+                return View(states);
+            } 
         }
 
         public IActionResult Index()
@@ -251,7 +254,15 @@ namespace khasGraduationProject.Controllers
             }
         }
 
-
+        [HttpGet]
+        public IActionResult GetDoctorsByState(int stateId)
+        {
+            using (var context = new WebContext())
+            {
+                List<DoctorDetails> doctors = context.doctors.ToList();
+                return Json(doctors);
+            }
+        }
     }
 }
 

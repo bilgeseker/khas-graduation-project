@@ -3,11 +3,11 @@ namespace khasGraduationProject.Models
 {
 	public class Appointments
 	{
-		public int id;
-		public string date;
-		public string time;
-		public int patient_id;
-		public int doctor_id;
-	}
+		public int id { get; set; }
+		public string date { get; set;}
+		public string time { get; set; }
+        public int patient_id { get; set; }
+        public int doctor_id { get; set; }
+    }
 }
 
