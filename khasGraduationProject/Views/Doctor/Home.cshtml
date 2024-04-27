@@ -1,6 +1,6 @@
 ﻿@{
-    Layout = "~/Views/Shared/_PatientNavbar.cshtml";
-    ViewData["Title"] = "Patient Appointments";
+    ViewData["Title"] = "Doctor Appointments";
+    Layout = "~/Views/Shared/_DoctorNavbar.cshtml";
 }
 
 @model List<AppointmentViewModel>
@@ -17,24 +17,27 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr class="text-center">
-                    <th>Doctor Full Name</th>
+                    <th>Patient Full Name</th>
+                    <th>Patient Birthday</th>
                     <th>Appointments Date</th>
                     <th>Appointments Time</th>
                     <th>Appointments Status</th>
                     <th> </th>
                 </tr>
             </thead>
-            <tbody id="patientBody" class="table-border-bottom-0">
+            <tbody id="doctorBody" class="table-border-bottom-0">
+
                 @foreach (var item in Model)
                 {
                     <tr class="text-center align-middle">
                         <td>
                             <ul class="m-0 d-flex align-items-center">
                                 <li class="avatar avatar-xs pull-up">
-                                    <img src="/@item.DoctorProfileImgPath" alt="Avatar" class="rounded-circle"> &nbsp;&nbsp; @item.DoctorName @item.DoctorSurname
+                                    <img src="/@item.PatientProfileImgPath" alt="Avatar" class="rounded-circle"> &nbsp;&nbsp; @item.PatientName @item.PatientSurname
                                 </li>
                             </ul>
                         </td>
+                        <td>@item.PatientBirthday.ToString("yyyy-MM-dd")</td>
                         <td>@item.Date.ToString("yyyy-MM-dd")</td>
                         <td>@item.Time</td>
 
@@ -48,24 +51,7 @@
                         }
 
                         <td>
-                            <div class="btn-group" role="group">
-
-                                @if (!@item.IsCancelled)
-                                {
-                                    <form id="formDoctorSettings" asp-controller="Patient" asp-action="AppointmentCancel" method="post">
-                                        <input type="hidden" name="id" value="@item.AppointmentId" />
-                                        <button type="submit" class="btn btn-danger btn-sm" style="background: #dc3545; margin: 5px; padding: 5px; border-radius: 4px;">
-                                            Cancel
-                                        </button>
-                                    </form>
-                                }
-
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target=@string.Format("#detailModal{0}", @item.AppointmentId) style="margin: 5px; padding: 5px; border-radius: 4px;">
-                                    Detail
-                                </button>
-                                
-                            </div>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=@string.Format("#detailModal{0}", @item.AppointmentId)>Detail</button>
                         </td>
                     </tr>
 
@@ -77,9 +63,8 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>@item.DoctorName @item.DoctorSurname</p>
-                                    <p>@item.DoctorEmail</p>
-                                    <p>@item.DoctorPhone</p>
+                                    <p>@item.PatientName @item.PatientSurname</p>
+                                    <p>@item.PatientEmail</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary">Go Trainıngs</button>
@@ -87,7 +72,8 @@
                             </div>
                         </div>
                     </div>
-                }
+                }  
+
             </tbody>
         </table>
     </div>
@@ -97,7 +83,7 @@
     $(document).ready(function () {
         $("#searchInput").on("keyup", function () {
             var value = $(this).val().toLowerCase();
-            $("#patientBody tr").filter(function () {
+            $("#doctorBody tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });

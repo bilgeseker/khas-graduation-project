@@ -10,7 +10,7 @@ namespace khasGraduationProject.Models
         public DbSet<States> states { get; set; }
         public DbSet<Specializations> specialization { get; set; }
         public DbSet<Genders> gender { get; set; }
-
+        public DbSet<Appointments> appointments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
