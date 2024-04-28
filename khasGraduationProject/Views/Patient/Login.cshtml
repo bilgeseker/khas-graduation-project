@@ -1,5 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_SignUpLoginNav.cshtml";
+    ViewData["Title"] = "Login";
 }
 
 <div class="container">
@@ -14,13 +15,13 @@
                     <input type="email" class="form-control log-input" id="patientMail" placeholder="Email" name="email">
                     <label for="floatingInput">Email address</label>
                 </div>
-                <div class="form-floating">
+                <div class="form-floating mb-3">
                     <input type="password" class="form-control log-input" id="patientPassword" placeholder="Password" name="password">
                     <label for="floatingPassword">Password</label>
                 </div>
                 <p>Do not have an account?<span><a class="log-signup" id="patientSignUp" asp-area="" asp-controller="Patient" asp-action="SignUp">Sign Up</a></span></p>
 
-                <button type="submit" id="loginButton" class="btn" style="background-color: #1A76D1; color:white; margin-bottom:16px;">Login</button>
+                <button type="submit" id="loginButton" class="btn mt-3" style="background-color: #1A76D1; color:white; margin-bottom:16px;">Login</button>
                 @if (!ViewData.ModelState.IsValid)
                 {
                     <div class="alert alert-danger validation-summary-errors" role="alert">

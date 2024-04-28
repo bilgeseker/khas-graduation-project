@@ -4,164 +4,135 @@
 }
 @model List<States>
 
-<div class="row g-3 mt-5" id="statesList">
-    <div class="col-2">
-        <label for="inputState" class="col-form-label">Choose State: </label>
+    <div class="card-style">
+        <div class="row g-3" id="statesList">
+            <div class="col-2 text-end">
+                <label for="inputState" class="col-form-label" style="font-weight:bold; color:black; font-size:large;">Choose State: </label>
+            </div>
+            <div class="col-3">
+                <select class="form-select" name="location_id" id="inputState">
+                    @foreach (var state in Model)
+                    {
+                        <option value="@state.id">@state.name</option>
+
+                    }
+                </select>
+            </div>
+            <div class="col-7"></div>
+        </div>
+
+        <div id="doctorsList" class="row mt-5">
+            <!-- Doctor cards will be dynamically added here -->
+        </div>
+
+        <div id="doctorSchedule">
+
+        </div>
     </div>
-    <div class="col-3">
-        <select class="form-select" name="location_id" id="inputState">
-            @foreach (var state in Model)
-            {
-                <option value="@state.id">@state.name</option>
 
-            }
-        </select>
-    </div>
-    <div class="col-7"></div>
-</div>
 
-<div id="doctorsList" class="row mt-5">
-    <!-- Doctor cards will be dynamically added here -->
-</div>
+<style>
+    .card-style {
+        background-color: #f5f5f5;
+        padding:30px;
+        border-radius:10px;
+        height:stretch;
+    }
 
-<div id="doctorSchedule">
-
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // State seçimi değiştiğinde doktorları listele
-        $('#inputState').change(function () {
-            var stateId = $(this).val();
-            listDoctors(stateId);
-        });
-
-        $(document).on('click', '.doctor-card', function () {
-            var doctorId = $(this).data('id');
-            showDoctorSchedule(doctorId);
-        });
-        $(document).on('click', '#goBackBtn', function () {
-            $('#doctorSchedule').empty();
-            listDoctors($('#inputState').val());
-            $('#statesList').show();
-        });
-
-        
-        // Doktor kartlarını listeleme fonksiyonu
-        function listDoctors(stateId) {
-            // AJAX isteği gönderme
-            $.ajax({
-                url: '/Patient/GetDoctorsByState',
-                type: 'GET',
-                data: { stateId: stateId },
-                success: function (response) {
-                    // Serverdan dönen doktor bilgilerini kullanarak kartları oluşturma
-                    $('#doctorsList').empty(); // Önceki kartları temizle
-                    $.each(response, function (index, doctor) {
-                        var cardHtml = `
-                            <div class="col-sm-4 mb-4">
-                                <div class="card doctor-card">
-                                    <div class="card-body">
-                                        <h5 class="card-title mb-2">${doctor.name}</h5>
-                                        <p class="card-text mb-3">${doctor.address}</p>
-                                    </div>
-                                </div>
-                            </div>`;
-                        $('#doctorsList').append(cardHtml);
-                    });
-                    
-                },
-                error: function () {
-                    alert('An error occurred while fetching doctors.');
-                }
+    #goBackBtn {
+        background-color: #f5f5f5;
+        color:black;
+        font-size:17px;
+    }
+    #goBackBtn:hover{
+        color:white;
+    }
+</style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // State seçimi değiştiğinde doktorları listele
+            $('#inputState').change(function () {
+                var stateId = $(this).val();
+                listDoctors(stateId);
             });
-        }
 
-        // Doktorun randevu saatlerini gösterme fonksiyonu
-        function showDoctorSchedule(doctorId) {
-            // Temizleme işlemi
-            $('#doctorSchedule').empty();
-            $('#doctorsList').empty();
-            $('#statesList').hide();
-
-            // Haftanın ilk gününü al
-            var today = new Date();
-            var currentDay = today.getDay(); // Haftanın günlerinden birinin indeksi (0: Pazar, 1: Pazartesi, ..., 6: Cumartesi)
-            var firstDay = new Date(today); // Haftanın ilk günü
-            firstDay.setDate(firstDay.getDate() - currentDay); // Haftanın ilk gününe git
-
-            // Haftanın günlerini ve saatlerini belirle
-            var days = [];
-            var hours = ['09:00', '12:00', '15:00', '18:00'];
-
-            // Haftanın günlerini oluştur
-            for (var i = 0; i < 5; i++) {
-                var day = new Date(firstDay);
-                day.setDate(day.getDate() + i);
-                days.push(day.toISOString().split('T')[0]);
-            }
-            var backButton = $('<button id="goBackBtn" class="btn btn-primary mb-4 ">Go Back</button>');
-            $('#doctorSchedule').append(backButton);
-
-            // Tarihleri gösterme
-            var daysDiv = $('<div class="days row" style="width:80%; margin:auto;"></div>');
-            $.each(days, function (index, day) {
-                var dayButton = $('<div class="col-2" style="margin:auto;"><button class="btn btn-outline-primary day">' + day + '</button></div>');
-                dayButton.data('day', day);
-                daysDiv.append(dayButton);
+            $(document).on('click', '.doctor-card', function () {
+                var doctorId = $(this).data('id');
+                showDoctorSchedule(doctorId);
             });
-            $('#doctorSchedule').append(daysDiv);
-
-            // Tarih butonlarına tıklandığında saatleri gösterme
-            $('.day').click(function () {
-                var selectedDay = $(this).data('day');
-                showAvailableHours(doctorId, selectedDay);
+            $(document).on('click', '#goBackBtn', function () {
+                $('#doctorSchedule').empty();
+                listDoctors($('#inputState').val());
+                $('#statesList').show();
             });
-        }
 
-        // Uygun saatleri gösterme fonksiyonu
-        function showAvailableHours(doctorId, selectedDay) {
-            // Temizleme işlemi
-            $('#availableHours').empty();
 
-            // Saatleri gösterme
-            var hoursDiv = $('<div class="hours"></div>');
-            $.each(hours, function (index, hour) {
-                // AJAX isteği yaparak randevu durumunu kontrol et
+            function listDoctors(stateId) {
                 $.ajax({
-                    url: '/Patient/CheckAppointmentAvailability',
-                    type: 'POST',
-                    data: { doctorId: doctorId, day: selectedDay, hour: hour },
+                    url: '/Patient/GetDoctorsByState',
+                    type: 'GET',
+                    data: { stateId: stateId },
                     success: function (response) {
-                        if (response.available) {
-                            var hourButton = $('<button class="btn btn-outline-success hour">' + hour + '</button>');
-                            hourButton.data('hour', hour);
-                            hoursDiv.append(hourButton);
-                        } else {
-                            var hourButton = $('<button class="btn btn-outline-danger hour" disabled>' + hour + ' - Not Available</button>');
-                            hourButton.data('hour', hour);
-                            hoursDiv.append(hourButton);
-                        }
+                        $('#doctorsList').empty();
+                        $.each(response, function (index, doctor) {
+                            var cardHtml = `
+                                <div class="col-sm-4 mb-4">
+                                    <div class="card doctor-card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-2">${doctor.name}</h5>
+                                            <p class="card-text mb-3">${doctor.address}</p>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            $('#doctorsList').append(cardHtml);
+                        });
+
                     },
                     error: function () {
-                        alert('An error occurred while checking appointment availability.');
+                        alert('An error occurred while fetching doctors.');
                     }
                 });
-            });
+            }
 
-            // Saat butonlarına tıklandığında seçimi işaretle
-            hoursDiv.on('click', '.hour', function () {
-                $('.hour').removeClass('active');
-                $(this).addClass('active');
-            });
+            // Doktorun randevu saatlerini gösterme fonksiyonu
+            function showDoctorSchedule(doctorId) {
+                // Temizleme işlemi
+                $('#doctorSchedule').empty();
+                $('#doctorsList').empty();
+                $('#statesList').hide();
 
-            // Saatleri göster
-            $('#availableHours').append(hoursDiv);
-        }
+                // Bugünkü tarihi al
+                var today = new Date();
 
+                // Haftanın günlerini ve saatlerini belirle
+                var days = [];
 
-    });
-    
+                // Haftanın günlerini oluştur
+                for (var i = 0; i < 5;) {
+                    var day = new Date(today);
+                    var dayIndex = day.getDay(); // Haftanın günlerinden birinin indeksi (0: Pazar, 1: Pazartesi, ..., 6: Cumartesi)
+                    if (dayIndex > 0 && dayIndex < 6) { // Haftaiçi günleri kontrol et
+                        var formattedDate = day.toLocaleDateString('en-EN', { day: '2-digit', month: '2-digit', year: 'numeric' }); // Türkçe formatında "dd.mm.yyyy"
+                        days.push(formattedDate);
+                        i++; // Haftaiçi gün eklediğinde arttır
+                    }
+                    today.setDate(today.getDate() + 1); // Bir sonraki günü al
+                }
 
-</script>
+                var backButton = $('<button id="goBackBtn" class="btn btn-primary mb-5"><i class="fa fa-chevron-left me-2"></i>Go Back</button>');
+                $('#doctorSchedule').append(backButton);
+
+                // Tarihleri gösterme
+                var daysDiv = $('<div class="days row" style="width:80%; margin:auto;"></div>');
+                $.each(days, function (index, day) {
+                    var dayButton = $('<div class="col-2" style="margin:auto;"><button class="btn btn-outline-primary day">' + day + '</button></div>');
+                    dayButton.data('day', day);
+                    daysDiv.append(dayButton);
+                });
+                $('#doctorSchedule').append(daysDiv);
+
+            }
+
+        });
+   </script>
