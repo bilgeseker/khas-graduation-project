@@ -302,8 +302,8 @@ namespace khasGraduationProject.Controllers
         {
             using (var context = new WebContext())
             {
-                List<DoctorDetails> doctors = context.doctors.ToList();
-                return Json(doctors);
+                List<DoctorDetails> filteredDoctors = context.doctors.ToList().FindAll(u => u.states_id == stateId);
+                return Json(filteredDoctors);
             }
         }
 
@@ -375,6 +375,12 @@ namespace khasGraduationProject.Controllers
 
                 return RedirectToAction("Home");
             }
+        }
+
+        [HttpPost]
+        public IActionResult CheckAppointmentAvailability(int doctorId, string selectedDate, string time)
+        {
+            return View();
         }
     }
 }
