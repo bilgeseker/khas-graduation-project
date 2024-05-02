@@ -76,14 +76,7 @@ namespace khasGraduationProject.Controllers
             }
         }
 
-        public ActionResult Doctors()
-        {
-            using (var context = new WebContext())
-            {
-                List<States> states = context.states.ToList();
-                return View(states);
-            } 
-        }
+       
 
         public IActionResult Index()
         {
@@ -113,14 +106,7 @@ namespace khasGraduationProject.Controllers
 
         public ActionResult Login()
         {
-            //using (var context = new WebContext())
-            //{
-            //    // Tüm hastaları liste olarak al
-            //    List<PatientDetails> modelList = context.patients.ToList();
-
-            //    // Modeli view'e geçir
-            //    return View(modelList);
-            //}
+            
             return View();
         }
 
@@ -297,6 +283,16 @@ namespace khasGraduationProject.Controllers
             }
         }
 
+        public ActionResult Doctors()
+        {
+            using (var context = new WebContext())
+            {
+                ViewData["UserId"] = HttpContext.Session.GetString("userId");
+                List<States> states = context.states.ToList();
+                return View(states);
+            }
+        }
+
         [HttpGet]
         public IActionResult GetDoctorsByState(int stateId)
         {
@@ -378,9 +374,23 @@ namespace khasGraduationProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult CheckAppointmentAvailability(int doctorId, string selectedDate, string time)
+        public IActionResult CheckAppointmentAvailability(int doctorId, string selectedDate, string time, int user_id)
         {
-            return View();
+            using(var context = new WebContext())
+            {
+                var formattedDate = DateTime.Parse(selectedDate);
+                var formattedTime = TimeSpan.Parse(time);
+                var data = context.appointments.FirstOrDefault(u => u.doctor_id == doctorId && u.date == formattedDate && u.time == formattedTime && u.patient_id == user_id);
+                if (data != null)
+                {
+                    return Json(new { available = false });
+                }
+                else
+                {
+                    return Json(new { available = true });
+                }
+            }
+            
         }
     }
 }

@@ -64,6 +64,9 @@
     <script>
         $(document).ready(function () {
             var selectedDoctorId;
+            var selectedDate;
+            var user_id = '@ViewData["UserId"]';
+
             $('#inputState').change(function () {
                 var stateId = $(this).val();
                 listDoctors(stateId);
@@ -71,6 +74,7 @@
 
             $(document).on('click', '.doctor-card', function () {
                 var doctorId = $(this).data('id');
+                
                 showDoctorSchedule(doctorId);
             });
 
@@ -83,7 +87,9 @@
 
             $(document).on('click', '.day', function () {
                 var selectedDay = $(this).data('day');
+                selectedDate = $(this).text();
                 showAvailableHours(selectedDay);
+                
             });
 
 
@@ -97,7 +103,7 @@
                         $.each(response, function (index, doctor) {
                             var cardHtml = `
                                 <div class="col-sm-4 mb-4">
-                                    <div class="card doctor-card">
+                                    <div class="card doctor-card" data-id="${doctor.id}">
                                         <div class="card-body">
                                             <h5 class="card-title mb-2">${doctor.name}</h5>
                                             <p class="card-text mb-3">${doctor.address}</p>
@@ -114,7 +120,7 @@
                 });
             }
 
-            
+
             function showDoctorSchedule(doctorId) {
                 $('#doctorSchedule').empty();
                 $('#doctorsList').empty();
@@ -130,7 +136,7 @@
                 for (var i = 0; i < 5;) {
                     var day = new Date(today);
                     var dayIndex = day.getDay(); // Haftanın günlerinden birinin indeksi (0: Pazar, 1: Pazartesi, ..., 6: Cumartesi)
-                    if (dayIndex > 0 && dayIndex < 6) { 
+                    if (dayIndex > 0 && dayIndex < 6) {
                         var formattedDate = day.getFullYear() + '-' + ('0' + (day.getMonth() + 1)).slice(-2) + '-' + ('0' + day.getDate()).slice(-2);
                         days.push(formattedDate);
                         i++;
@@ -144,38 +150,39 @@
 
                 var daysDiv = $('<div class="days row" style="width:80%; margin:auto;"></div>');
                 $.each(days, function (index, day) {
-                    var dayButton = $('<div class="col-2" style="margin:auto;"><button class="btn btn-outline-primary day">' + day + '</button></div>');
+                    var dayButton = $('<div class="col-2" style="margin:auto;"><button class="btn btn-outline-primary day" id="'+ day + '">' + day + '</button></div>');
                     dayButton.data('day', day);
                     daysDiv.append(dayButton);
                 });
                 $('#doctorSchedule').append(daysDiv);
             }
 
-           
+
             function showAvailableHours(selectedDay) {
                 $('#availableHours').empty();
 
-                var hours = ['09:00:00', '11:00:00', '13:00:00', '15:00:00', '17:00:00'];
+                var hours = ['10:30:00', '11:00:00', '13:00:00', '15:00:00', '17:00:00'];
                 $.each(hours, function (index, hour) {
 
-                    var hourButton = $('<button type="button" class="list-group-item list-group-item-action button_list">' + hour + '</button>');
+                    var hourButton = $('<button type="button" class="list-group-item list-group-item-action button_list" id="' + hour.replace(/:/g, '') +'">' + hour + '</button>');
 
                     var hourOption = $('<div class="mb-1"></div>').append(hourButton);
 
                     $('#availableHours').append(hourOption);
 
-                   // checkAppointmentAvailability(selectedDoctorId, selectedDay, hour);
+                    checkAppointmentAvailability(selectedDoctorId, selectedDate, hour, user_id);
                 });
             }
 
-            function checkAppointmentAvailability(doctorId, selectedDate, hour) {
+            function checkAppointmentAvailability(doctorId, selectedDate, hour, user_id) {
+
                 $.ajax({
                     url: '/Patient/CheckAppointmentAvailability',
                     type: 'POST',
-                    data: { doctorId: doctorId, date: selectedDate, time: hour },
+                    data: { doctorId: doctorId, selectedDate: selectedDate, time: hour, user_id: user_id },
                     success: function (response) {
                         if (!response.available) {
-                            $('#' + hour.replace(':', '')).prop('disabled', true);
+                            $('#' + hour.replace(/:/g, '')).prop('disabled', true);
                         }
                     },
                     error: function () {
@@ -196,7 +203,6 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Appointment Date: ${selectedDay}</p>
                         <p>Appointment Time: ${selectedHour}</p>
                     </div>
                     <div class="modal-footer">
@@ -214,4 +220,4 @@
             });
 
         });
-   </script>
+    </script>
