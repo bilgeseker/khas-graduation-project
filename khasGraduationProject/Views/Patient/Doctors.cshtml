@@ -66,6 +66,7 @@
             var selectedDoctorId;
             var selectedDate;
             var user_id = '@ViewData["UserId"]';
+            var selectedHour;
 
             $('#inputState').change(function () {
                 var stateId = $(this).val();
@@ -74,7 +75,6 @@
 
             $(document).on('click', '.doctor-card', function () {
                 var doctorId = $(this).data('id');
-                
                 showDoctorSchedule(doctorId);
             });
 
@@ -192,31 +192,65 @@
             }
 
             $(document).on('click', '.button_list', function () {
-                var selectedHour = $(this).text();
+                selectedHour = $(this).text();
+                $.ajax({
+                    url: '/Patient/GetDoctorAndPatientInfo',
+                    type: 'GET',
+                    data: { doctorId: selectedDoctorId, patientId: user_id },
+                    success: function (response) {
+                        if (response.error) {
+                            alert(response.error);
+                        } else {
+                            var doctor = response.doctor;
+                            var patient = response.patient;
+                            var modalContent = `
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Appointment Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Doctor Name: ${doctor.name}` + ` ${doctor.surname}` +`</p>
+                                            <p>Patient Name: ${patient.name}` + ` ${patient.surname}` +`</p>
+                                            <p>Appointment Date: ${selectedDate}</p>
+                                            <p>Appointment Time: ${selectedHour}</p>
+                                            <p>Address: ${doctor.address}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" id="approveAppointmentButton">Approve Appointment</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
 
-                // Modal içeriğini oluşturma
-                var modalContent = `
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Appointment Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Appointment Time: ${selectedHour}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Approve Appointment</button>
-                    </div>
-                </div>
-            </div>
-        `;
+                            $('#modal').html(modalContent);
 
-                // Modal içeriğini yerleştirme
-                $('#modal').html(modalContent);
+                            $('#modal').modal('show');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching doctor and patient.');
+                    }
+                });
+            });
 
-                // Modalı gösterme
-                $('#modal').modal('show');
+            $(document).on('click', '#approveAppointmentButton', function () {
+                $.ajax({
+                    url: '/Patient/ApproveAppointment',
+                    type: 'POST',
+                    data: { doctorId: selectedDoctorId, patientId: user_id, date: selectedDate, time: selectedHour },
+                    success: function (response) {
+                        if (response) {
+                            $('#modal').modal('hide');
+                            alert('Appointment approved!!');
+                            $('#' + selectedHour.replace(/:/g, '')).prop('disabled', true);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while approving appointment.');
+                    }
+                });
             });
 
         });

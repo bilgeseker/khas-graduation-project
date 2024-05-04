@@ -247,16 +247,12 @@ namespace khasGraduationProject.Controllers
                     {
                         try
                         {
-                            // wwwroot klasörünün fiziksel yolu
                             var webRootPath = _hostingEnvironment.WebRootPath;
 
-                            // Dosyanın kaydedileceği yol
                             var filePath = Path.Combine(webRootPath, "profileImages", files.FileName);
 
-                            // Dosyanın var olup olmadığını kontrol et
                             if (!System.IO.File.Exists(filePath))
                             {
-                                // Dosyayı wwwroot klasörüne kaydet
                                 using (var stream = new FileStream(filePath, FileMode.Create))
                                 {
                                     files.CopyTo(stream);
@@ -270,7 +266,6 @@ namespace khasGraduationProject.Controllers
                         }
                         catch (Exception ex)
                         {
-                            // Hata durumunda uygun yanıtı döndür
                             return StatusCode(500, $"Internal server error: {ex.Message}");
                         }
                     }
@@ -381,7 +376,7 @@ namespace khasGraduationProject.Controllers
                 var formattedDate = DateTime.Parse(selectedDate);
                 var formattedTime = TimeSpan.Parse(time);
                 var data = context.appointments.FirstOrDefault(u => u.doctor_id == doctorId && u.date == formattedDate && u.time == formattedTime && u.patient_id == user_id);
-                if (data != null)
+                if (data != null && data.isCancelled != true)
                 {
                     return Json(new { available = false });
                 }
@@ -391,6 +386,54 @@ namespace khasGraduationProject.Controllers
                 }
             }
             
+        }
+
+        [HttpGet]
+        public IActionResult GetDoctorAndPatientInfo(int doctorId, int patientId)
+        {
+            using(var context = new WebContext())
+            {
+                var doctor = context.doctors.FirstOrDefault(d => d.id == doctorId);
+                var patient = context.patients.FirstOrDefault(p => p.id == patientId);
+
+                if (doctor != null && patient != null)
+                {
+                    return Json(new { doctor, patient });
+                }
+                else
+                {
+                    return Json(new { error = "Doctor or patient not found." });
+                }
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ApproveAppointment(int doctorId, int patientId, string date, string time)
+        {
+            using(var context = new WebContext())
+            {
+                var formattedDate = DateTime.Parse(date);
+                var formattedTime = TimeSpan.Parse(time);
+
+                var appointment = new Appointments
+                {
+                    date = formattedDate,
+                    time = formattedTime,
+                    doctor_id = doctorId,
+                    patient_id = patientId,
+                    isCancelled = false
+                };
+                try
+                {
+                    context.appointments.Add(appointment);
+                    context.SaveChanges();
+                    return Json(new { available = true });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { available = false, error = ex.Message });
+                }
+            }
         }
     }
 }
