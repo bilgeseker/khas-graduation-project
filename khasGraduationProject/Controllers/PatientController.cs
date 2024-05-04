@@ -375,8 +375,12 @@ namespace khasGraduationProject.Controllers
             {
                 var formattedDate = DateTime.Parse(selectedDate);
                 var formattedTime = TimeSpan.Parse(time);
-                var data = context.appointments.FirstOrDefault(u => u.doctor_id == doctorId && u.date == formattedDate && u.time == formattedTime && u.patient_id == user_id);
-                if (data != null && data.isCancelled != true)
+                var data = context.appointments.FirstOrDefault(u => u.doctor_id == doctorId && 
+                                                                u.date == formattedDate && 
+                                                                u.time == formattedTime && 
+                                                                u.patient_id == user_id && 
+                                                                u.isCancelled == false);
+                if (data != null) //&& data.isCancelled != true
                 {
                     return Json(new { available = false });
                 }
