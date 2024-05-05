@@ -4,6 +4,7 @@ using System.Data;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +12,7 @@ using khasGraduationProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
-using static System.Collections.Specialized.BitVector32;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace khasGraduationProject.Controllers
 {
@@ -69,14 +67,13 @@ namespace khasGraduationProject.Controllers
                             PatientBirthday = patient.birthday,
                             PatientEmail = patient.email
                         })
+                    .OrderBy(appointment => appointment.IsCancelled)
                     .OrderByDescending(appointment => appointment.Date)
                     .ToList();
 
                 return View(appointments);
             }
         }
-
-       
 
         public IActionResult Index()
         {
@@ -108,6 +105,175 @@ namespace khasGraduationProject.Controllers
         {
             
             return View();
+        }
+
+        public IActionResult Training(int id)
+        {
+            var userId = HttpContext.Session.GetString("userId");
+
+            if (userId == null)
+            {
+                return View("Login");
+            }
+            else
+            {
+                var context = new WebContext();
+                var audios = context.audios.ToList();
+                var patientsAudios = context.patientsAudios.Where(x => x.app_id == id);
+
+                var query = (
+                                from a in context.audios
+                                    join p in context.patientsAudios.Where(p => p.app_id == id) on a.id equals p.audio_id
+                                into joined
+                                from pAudio in joined.DefaultIfEmpty()
+                                where pAudio != null //|| pAudio.app_id == id
+                                select new AudioPatientViewModel
+                                {
+                                    AudioId = a.id,
+                                    AudioFilePath = a.audioFilePath,
+                                    AudioText = a.audioText,
+
+                                    PatientsAudiosId = pAudio.id,
+                                    PatientsAudiosAudioId = pAudio.audio_id,
+                                    PatientsAudiosAppId = pAudio.app_id,
+                                    PatientAudioFilePath = pAudio.patientAudioFilePath,
+                                    PatientAudioText = pAudio.patientAudioText,
+                                    PatientAudioPercentage = pAudio.percentage
+
+                                    //PatientsAudiosId = pAudio != null ? pAudio.id : 0,
+                                    //PatientsAudiosAudioId = pAudio != null ? pAudio.audio_id : 0,
+                                    //PatientsAudiosAppId = pAudio != null ? pAudio.app_id : id,
+                                    //PatientAudioFilePath = pAudio != null ? pAudio.patientAudioFilePath : "",
+                                    //PatientAudioText = pAudio != null ? pAudio.patientAudioText : "",
+                                    //PatientAudioPercentage = pAudio != null ? pAudio.percentage : 0
+
+                                }
+                           ).ToList();
+
+                ViewBag.TrainingAppId = id;
+
+                return View(query);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult PatientsAudiosSave(int id, int appId, IFormFile files)
+        {
+            using (var context = new WebContext())
+            {
+                var model = context.patientsAudios.FirstOrDefault(u => u.app_id == appId && u.audio_id == id);
+                var audios = context.audios.ToList();
+                var audioModel = context.audios.FirstOrDefault(u => u.id == id);
+
+                if (model != null)
+                {
+                    if (files != null && files.Length > 0)
+                    {
+                        try
+                        {
+                            var webRootPath = _hostingEnvironment.WebRootPath;
+
+                            var filePath = Path.Combine(webRootPath, "patientsAudiosFiles", files.FileName);
+
+                            if (!System.IO.File.Exists(filePath))
+                            {
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    files.CopyTo(stream);
+                                }
+                            }
+
+                            string text = SpeechManager.AudioToText(filePath);
+                            double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
+
+                            if (!model.patientAudioFilePath.Equals(Path.Combine("patientsAudiosFiles", files.FileName)))
+                            {
+                                model.patientAudioFilePath = Path.Combine("patientsAudiosFiles", files.FileName);
+                            }
+
+                            if (!model.patientAudioText.Equals(text))
+                            {
+                                model.patientAudioText = text;
+                            }
+
+                            if (!model.percentage.Equals(calcPercentage))
+                            {
+                                model.percentage = calcPercentage;
+                            }
+
+                            context.patientsAudios.Update(model);
+                            context.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            return StatusCode(500, $"Internal server error: {ex.Message}");
+                        }
+                    }
+                }
+                else
+                {
+                    if (files != null && files.Length > 0)
+                    {
+                        try
+                        {
+                            var webRootPath = _hostingEnvironment.WebRootPath;
+
+                            var filePath = Path.Combine(webRootPath, "patientsAudiosFiles", files.FileName);
+
+                            if (!System.IO.File.Exists(filePath))
+                            {
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    files.CopyTo(stream);
+                                }
+                            }
+
+                            foreach (var item in audios)
+                            {
+                                if (item.id == id)
+                                {
+                                    string text = SpeechManager.AudioToText(filePath);
+                                    double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
+
+                                    var newPatientsAudios = new PatientsAudios
+                                    {
+                                        app_id = appId,
+                                        audio_id = id,
+                                        patientAudioFilePath = Path.Combine("patientsAudiosFiles", files.FileName),
+                                        patientAudioText = text,
+                                        percentage = calcPercentage
+                                    };
+
+                                    context.patientsAudios.Add(newPatientsAudios);
+                                    context.SaveChanges();
+                                } 
+                                else
+                                {
+                                    var newPatientsAudios = new PatientsAudios
+                                    {
+                                        app_id = appId,
+                                        audio_id = id,
+                                        patientAudioFilePath = "",
+                                        patientAudioText = "",
+                                        percentage = 0
+                                    };
+
+                                    context.patientsAudios.Add(newPatientsAudios);
+                                    context.SaveChanges();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return StatusCode(500, $"Internal server error: {ex.Message}");
+                        }
+
+                    }
+
+                }
+
+                return RedirectToAction("Training", new { id = appId });
+            }
         }
 
         public string HashPass(string password)

@@ -55,15 +55,15 @@
                                     <form id="formDoctorSettings" asp-controller="Patient" asp-action="AppointmentCancel" method="post">
                                         <input type="hidden" name="id" value="@item.AppointmentId" />
                                         <button type="submit" class="btn btn-danger btn-sm" style="background: #dc3545; margin: 5px; padding: 5px; border-radius: 4px;">
-                                            Cancel
+                                            <i class="fa-solid fa-xmark"></i> Cancel
                                         </button>
                                     </form>
-                                }
 
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target=@string.Format("#detailModal{0}", @item.AppointmentId) style="margin: 5px; padding: 5px; border-radius: 4px;">
-                                    Detail
-                                </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target=@string.Format("#detailModal{0}", @item.AppointmentId) style="margin: 5px; padding: 5px; border-radius: 4px;">
+                                        <i class="fa-solid fa-circle-info"></i> Detail
+                                    </button>
+                                }                              
                                 
                             </div>
                         </td>
@@ -82,7 +82,7 @@
                                     <p>@item.DoctorPhone</p>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Go Trainıngs</button>
+                                    <a class="btn btn-primary" style="color: white" asp-controller="Patient" asp-action="Training" asp-route-id="@item.AppointmentId"> <i class="fa-solid fa-file-audio"></i> &nbsp; Go Trainings</a>
                                 </div>
                             </div>
                         </div>

@@ -1,20 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1706.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "khasGraduationProject", "khasGraduationProject\khasGraduationProject.csproj", "{EFE39C2D-FA50-4793-8E3F-547E92CDD952}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "khasGraduationProject", "khasGraduationProject\khasGraduationProject.csproj", "{EFE39C2D-FA50-4793-8E3F-547E92CDD952}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Debug|x64.ActiveCfg = Debug|x64
+		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Debug|x64.Build.0 = Debug|x64
 		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Release|x64.ActiveCfg = Release|x64
+		{EFE39C2D-FA50-4793-8E3F-547E92CDD952}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

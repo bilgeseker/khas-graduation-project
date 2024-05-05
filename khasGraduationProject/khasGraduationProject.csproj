@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
@@ -13,13 +14,14 @@
     <None Remove="Views\Patient\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Patient\" />
+    <Folder Include="wwwroot\patientsAudiosFiles\" />
     <Folder Include="wwwroot\profileImages\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.18" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="System.Speech" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Views\Doctor\Index.cshtml">
