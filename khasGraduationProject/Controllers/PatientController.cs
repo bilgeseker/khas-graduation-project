@@ -203,6 +203,7 @@ namespace khasGraduationProject.Controllers
         [HttpPost]
         public IActionResult PatientsAudiosSave(int id, int appId, IFormFile files)
         {
+            // id = audio_id
             using (var context = new WebContext())
             {
                 var model = context.patientsAudios.FirstOrDefault(u => u.app_id == appId && u.audio_id == id);
@@ -274,36 +275,41 @@ namespace khasGraduationProject.Controllers
 
                             foreach (var item in audios)
                             {
-                                if (item.id == id)
+                                var result = context.patientsAudios.Where(u => u.app_id == appId && u.audio_id == item.id).ToList().Count;
+
+                                if (result == 0)
                                 {
-                                    string text = SpeechManager.AudioToText(filePath);
-                                    double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
-
-                                    var newPatientsAudios = new PatientsAudios
+                                    if (item.id == id)
                                     {
-                                        app_id = appId,
-                                        audio_id = id,
-                                        patientAudioFilePath = Path.Combine("patientsAudiosFiles", files.FileName),
-                                        patientAudioText = text,
-                                        percentage = calcPercentage
-                                    };
+                                        string text = SpeechManager.AudioToText(filePath);
+                                        double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
 
-                                    context.patientsAudios.Add(newPatientsAudios);
-                                    context.SaveChanges();
-                                } 
-                                else
-                                {
-                                    var newPatientsAudios = new PatientsAudios
+                                        var newPatientsAudios = new PatientsAudios
+                                        {
+                                            app_id = appId,
+                                            audio_id = item.id,
+                                            patientAudioFilePath = Path.Combine("patientsAudiosFiles", files.FileName),
+                                            patientAudioText = text,
+                                            percentage = calcPercentage
+                                        };
+
+                                        context.patientsAudios.Add(newPatientsAudios);
+                                        context.SaveChanges();
+                                    }
+                                    else
                                     {
-                                        app_id = appId,
-                                        audio_id = id,
-                                        patientAudioFilePath = "",
-                                        patientAudioText = "",
-                                        percentage = 0
-                                    };
+                                        var newPatientsAudios = new PatientsAudios
+                                        {
+                                            app_id = appId,
+                                            audio_id = item.id,
+                                            patientAudioFilePath = "",
+                                            patientAudioText = "",
+                                            percentage = 0
+                                        };
 
-                                    context.patientsAudios.Add(newPatientsAudios);
-                                    context.SaveChanges();
+                                        context.patientsAudios.Add(newPatientsAudios);
+                                        context.SaveChanges();
+                                    }
                                 }
                             }
                         }
@@ -311,9 +317,7 @@ namespace khasGraduationProject.Controllers
                         {
                             return StatusCode(500, $"Internal server error: {ex.Message}");
                         }
-
                     }
-
                 }
 
                 return RedirectToAction("Training", new { id = appId });

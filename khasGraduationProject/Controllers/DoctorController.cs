@@ -136,6 +136,23 @@ namespace khasGraduationProject.Controllers
             }
         }
 
+        public IActionResult Audios()
+        {
+            var userId = HttpContext.Session.GetString("userId");
+
+            if (userId == null)
+            {
+                return View("Login");
+            }
+            else
+            {
+                var context = new WebContext();
+                var audios = context.audios.ToList();
+
+                return View(audios);
+            }
+        }
+
         public IActionResult Login()
         {
             return View();
@@ -315,6 +332,58 @@ namespace khasGraduationProject.Controllers
 
                 return RedirectToAction(action);
             }
+        }
+
+        [HttpPost]
+        public IActionResult AudioSave(string audioText, IFormFile files)
+        {
+            if (files != null && files.Length > 0)
+            {
+                try
+                {
+                    var webRootPath = _hostingEnvironment.WebRootPath;
+
+                    var filePath = Path.Combine(webRootPath, "profileImages", files.FileName);
+
+                    if (!System.IO.File.Exists(filePath))
+                    {
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            files.CopyTo(stream);
+                        }
+                    }
+
+                    using (var context = new WebContext())
+                    {
+                        var model = context.audios.FirstOrDefault(u => u.audioText.ToLower().Equals(audioText.ToLower()));
+
+                        if (model == null)
+                        {
+                            var newAudio = new Audios
+                            {
+                                audioText = audioText,
+                                audioFilePath = Path.Combine("audiosFiles", files.FileName)
+                            };
+
+                            context.audios.Add(newAudio);
+                            context.SaveChanges();
+
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "The text exist!!");
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    // Hata durumunda uygun yanıtı döndür
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return RedirectToAction("Audios");
         }
     }
 }

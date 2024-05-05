@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "~/Views/Shared/_DoctorNavbar.cshtml";
+    ViewData["Title"] = "Audio Files";
+}
+
+@model List<Audios>
+
+<div class="card mb-4 mt-5">
+    <h5 class="card-header">Audio Files </h5>
+    <br>
+
+    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+            data-bs-target="#audioSaveModel" style="margin: 5px; padding: 5px; border-radius: 4px;">
+        <i class="fa-solid fa-upload"></i> Upload new Audio
+    </button>
+
+    <div class="table-responsive text-nowrap">
+        <table class="table table-striped table-bordered" style="width: 100%;">
+            <thead>
+                <tr class="text-center">
+                    <th>Audio</th>
+                    <th>Audio Text</th>
+                </tr>
+            </thead>
+            <tbody id="patientBody" class="table-border-bottom-0">
+                @foreach (var item in Model)
+                {
+                    <tr class="text-center align-middle">
+                        
+                        <td>
+                            <audio controls>
+                                <source src="~/@item.audioFilePath" type="audio/wav">
+                            </audio>                            
+                        </td>
+
+                        <td>@item.audioText</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <form id="formAudioSave" asp-controller="Doctor" asp-action="AudioSave" method="post" enctype="multipart/form-data">
+        <div class="modal fade" id="audioSaveModel" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="detailModalLabel">Upload Audio</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="fa-solid fa-font"></i></span>
+                            <input class="form-control" type="text" id="audioText" name="audioText" placeholder="Audio Text" required>
+                        </div>
+                        <br />
+                        <div class="input-group input-group-merge">
+                            <div class="button-wrapper">
+                                <label for="files" class="btn btn-primary me-2 mb-4" tabindex="0" style="margin: 5px; padding: 5px; border-radius: 4px; background: #94C9A9;>
+                                    <span class="d-none d-sm-block"> <i class="fa-solid fa-upload"></i> Upload new Audio</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                    <input type="file" id="files" name="files" class="account-file-input" hidden="" accept="audio/wav" />
+                                </label>
+                                <p class="text-muted mb-0">Allowed WAV.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"> <i class="fa-solid fa-floppy-disk"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#patientBody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
