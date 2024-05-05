@@ -1,22 +1,18 @@
 ﻿@{
     Layout = "~/Views/Shared/_PatientNavbar.cshtml";
-    ViewData["Title"] = "Patient Training";
+    ViewData["Title"] = "Doctor Patient's Training";
 }
 
-@* @model List<Audios> *@
-@* @model dynamic *@
 @model List<AudioPatientViewModel>
 
 <div class="card mb-4 mt-5">
-    <h5 class="card-header">Training List (@ViewBag.TrainingAppId)</h5>
+    <h5 class="card-header">Patient's Training List (@ViewBag.TrainingAppId)</h5>
     <br>
     <div class="table-responsive text-nowrap">
         <table class="table table-striped table-bordered" style="width: 100%;">
             <thead>
                 <tr class="text-center">
                     <th style="width: 25%;">Training Audio</th>
-                    
-                    <th style="width: 15%;"> </th>
 
                     <th style="width: 25%;">Patient Audio</th>
 
@@ -36,32 +32,10 @@
                         </td>
 
                         <td>
-                            <form id="patientsAudiosSave" asp-controller="Patient" asp-action="PatientsAudiosSave" method="post" enctype="multipart/form-data">
-                                <input type="hidden" id="id" name="id" value="@item.AudioId" />
-                                <input type="hidden" id="appId" name="appId" value="@ViewBag.TrainingAppId" />
-
-                                <div class="button-wrapper">
-                                    <label for="@string.Format("files{0}", @item.AudioId)" class="btn btn-primary" tabindex="0" style="margin: 5px; padding: 5px; border-radius: 4px; background: #94C9A9;">
-                                        <span class="d-none d-sm-block"> <i class="fa-solid fa-upload"></i> Upload</span>
-                                        <input type="file" id="@string.Format("files{0}", @item.AudioId)" name="files" class="account-file-input" hidden="" accept="audio/wav" />
-                                    </label>
-                                    <button type="submit" class="btn btn-primary btn-sm" style="margin: 5px; padding: 5px; border-radius: 4px;">
-                                        <i class="fa-solid fa-floppy-disk"></i> Save
-                                    </button>
-                                    <p class="text-muted mb-0">Allowed WAV.</p>
-                                </div>
-                            </form>
-
-                            @* <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-primary btn-sm" style="margin: 5px; padding: 5px; border-radius: 4px;">
-                                    Upload
-                                </button>
-                            </div> *@
-                        </td>
-
-                        <td>
                             @if (!string.IsNullOrEmpty(@item.PatientAudioFilePath))
                             {
+                                <p> <b> @item.PatientAudioText </b> </p>
+
                                 <audio controls>
                                     <source src="~/@item.PatientAudioFilePath" type="audio/wav">
                                 </audio>
@@ -92,7 +66,7 @@
                                 @if (string.IsNullOrEmpty(@item.PatientAudioFilePath))
                                 {
                                     <span class="badge bg-warning">No Audio Found.</span>
-                                }
+                                } 
                                 else
                                 {
                                     <span class="badge bg-danger">Try Again.</span>

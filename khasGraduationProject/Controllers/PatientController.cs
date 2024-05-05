@@ -12,6 +12,7 @@ using khasGraduationProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace khasGraduationProject.Controllers
@@ -68,7 +69,7 @@ namespace khasGraduationProject.Controllers
                             PatientEmail = patient.email
                         })
                     .OrderBy(appointment => appointment.IsCancelled)
-                    .OrderByDescending(appointment => appointment.Date)
+                    .ThenByDescending(appointment => appointment.Date)
                     .ToList();
 
                 var query = (
@@ -143,12 +144,38 @@ namespace khasGraduationProject.Controllers
             {
                 var context = new WebContext();
                 var audios = context.audios.ToList();
-                var patientsAudios = context.patientsAudios.Where(x => x.app_id == id);
+                var patientsAudios = context.patientsAudios.Where(x => x.app_id == id).ToList();
 
-                var query = (
+                var query = new List<AudioPatientViewModel>();
+
+                if (patientsAudios.Count == 0)
+                {
+                    query = (
                                 from a in context.audios
                                     join p in context.patientsAudios.Where(p => p.app_id == id) on a.id equals p.audio_id
                                 into joined
+                                from pAudio in joined.DefaultIfEmpty()
+                                select new AudioPatientViewModel
+                                {
+                                    AudioId = a.id,
+                                    AudioFilePath = a.audioFilePath,
+                                    AudioText = a.audioText,
+
+                                    PatientsAudiosId = pAudio != null ? pAudio.id : 0,
+                                    PatientsAudiosAudioId = pAudio != null ? pAudio.audio_id : 0,
+                                    PatientsAudiosAppId = pAudio != null ? pAudio.app_id : id,
+                                    PatientAudioFilePath = pAudio != null ? pAudio.patientAudioFilePath : "",
+                                    PatientAudioText = pAudio != null ? pAudio.patientAudioText : "",
+                                    PatientAudioPercentage = pAudio != null ? pAudio.percentage : 0
+
+                                }
+                           ).ToList();
+                } else
+                {
+                    query = (
+                                from a in context.audios
+                                join p in context.patientsAudios.Where(p => p.app_id == id) on a.id equals p.audio_id
+                            into joined
                                 from pAudio in joined.DefaultIfEmpty()
                                 where pAudio != null //|| pAudio.app_id == id
                                 select new AudioPatientViewModel
@@ -163,16 +190,9 @@ namespace khasGraduationProject.Controllers
                                     PatientAudioFilePath = pAudio.patientAudioFilePath,
                                     PatientAudioText = pAudio.patientAudioText,
                                     PatientAudioPercentage = pAudio.percentage
-
-                                    //PatientsAudiosId = pAudio != null ? pAudio.id : 0,
-                                    //PatientsAudiosAudioId = pAudio != null ? pAudio.audio_id : 0,
-                                    //PatientsAudiosAppId = pAudio != null ? pAudio.app_id : id,
-                                    //PatientAudioFilePath = pAudio != null ? pAudio.patientAudioFilePath : "",
-                                    //PatientAudioText = pAudio != null ? pAudio.patientAudioText : "",
-                                    //PatientAudioPercentage = pAudio != null ? pAudio.percentage : 0
-
                                 }
                            ).ToList();
+                }
 
                 ViewBag.TrainingAppId = id;
 

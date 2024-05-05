@@ -87,13 +87,54 @@ namespace khasGraduationProject.Controllers
                             PatientBirthday = patient.birthday,
                             PatientEmail = patient.email
                         })
-                    .OrderByDescending(appointment => appointment.Date)
+                    .OrderBy(appointment => appointment.IsCancelled)
+                    .ThenByDescending(appointment => appointment.Date)
                     .ToList();
 
                 return View(appointments);
             }
         }
 
+        public IActionResult Training(int id)
+        {
+            var userId = HttpContext.Session.GetString("userId");
+
+            if (userId == null)
+            {
+                return View("Login");
+            }
+            else
+            {
+                var context = new WebContext();
+                var audios = context.audios.ToList();
+                var patientsAudios = context.patientsAudios.Where(x => x.app_id == id);
+
+                var query = (
+                                from a in context.audios
+                                join p in context.patientsAudios.Where(p => p.app_id == id) on a.id equals p.audio_id
+                            into joined
+                                from pAudio in joined.DefaultIfEmpty()
+                                where pAudio != null //|| pAudio.app_id == id
+                                select new AudioPatientViewModel
+                                {
+                                    AudioId = a.id,
+                                    AudioFilePath = a.audioFilePath,
+                                    AudioText = a.audioText,
+
+                                    PatientsAudiosId = pAudio.id,
+                                    PatientsAudiosAudioId = pAudio.audio_id,
+                                    PatientsAudiosAppId = pAudio.app_id,
+                                    PatientAudioFilePath = pAudio.patientAudioFilePath,
+                                    PatientAudioText = pAudio.patientAudioText,
+                                    PatientAudioPercentage = pAudio.percentage
+                                }
+                           ).ToList();
+
+                ViewBag.TrainingAppId = id;
+
+                return View(query);
+            }
+        }
 
         public IActionResult Login()
         {

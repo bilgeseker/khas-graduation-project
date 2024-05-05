@@ -51,31 +51,54 @@
                         }
 
                         <td>
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target=@string.Format("#detailModal{0}", @item.AppointmentId)>Detail</button>
+                            @if (!@item.IsCancelled)
+                            {
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target=@string.Format("#detailModal{0}", @item.AppointmentId) style="margin: 5px; padding: 5px; border-radius: 4px;">
+                                    <i class="fa-solid fa-circle-info"></i> Detail
+                                </button>
+                            }                            
                         </td>
                     </tr>
-
-                    <div class="modal fade" id="@string.Format("detailModal{0}", @item.AppointmentId)" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="detailModalLabel">Appointments Detail</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>@item.PatientName @item.PatientSurname</p>
-                                    <p>@item.PatientEmail</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Go Trainıngs</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 }  
 
             </tbody>
         </table>
+
+        @foreach (var item in Model)
+        {
+            <div class="modal fade" id="@string.Format("detailModal{0}", @item.AppointmentId)" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="detailModalLabel">Appointments Detail</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                             <table class="table table-striped table-bordered">
+                                 <thead>
+                                     <tr class="text-center">
+                                        <th>Patient Full Name</th>
+                                        <th>Patient Email</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="patientBody" class="table-border-bottom-0">
+                                     <tr>
+                                        <td>@item.PatientName @item.PatientSurname</td>
+                                        <td>@item.PatientEmail</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-primary" style="color: white" asp-controller="Doctor" asp-action="Training" asp-route-id="@item.AppointmentId"> <i class="fa-solid fa-file-audio"></i> &nbsp; Go Patient's Trainings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
     </div>
 </div>
 
