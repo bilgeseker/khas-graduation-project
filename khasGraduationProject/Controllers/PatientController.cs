@@ -71,7 +71,31 @@ namespace khasGraduationProject.Controllers
                     .OrderByDescending(appointment => appointment.Date)
                     .ToList();
 
-                return View(appointments);
+                var query = (
+                                from a in context.audios
+                                join p in context.patientsAudios on a.id equals p.audio_id
+                                join app in context.appointments on p.app_id equals app.id
+                                where p.percentage > 0 && app.patient_id == Convert.ToInt32(userId) //&& p.app_id == 8
+                                select new AudioPatientViewModel
+                                {
+                                    AudioId = a.id,
+                                    AudioFilePath = a.audioFilePath,
+                                    AudioText = a.audioText,
+
+                                    PatientsAudiosId = a.id,
+                                    PatientsAudiosAudioId = p.audio_id,
+                                    PatientsAudiosAppId = p.app_id,
+                                    PatientAudioFilePath = p.patientAudioFilePath,
+                                    PatientAudioText = p.patientAudioText,
+                                    PatientAudioPercentage = p.percentage
+                                }
+                           ).ToList();
+
+                dynamic myModel = new ExpandoObject();
+                myModel.AppointmentViewModel = appointments;
+                myModel.AudioPatientViewModel = query;
+
+                return View(myModel);
             }
         }
 

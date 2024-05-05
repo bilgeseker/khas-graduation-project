@@ -3,7 +3,9 @@
     ViewData["Title"] = "Patient Appointments";
 }
 
-@model List<AppointmentViewModel>
+@* @model List<AppointmentViewModel> *@
+
+@model dynamic
 
 <div class="card mb-4 mt-5">
     <h5 class="card-header">Appointments List</h5>
@@ -25,7 +27,7 @@
                 </tr>
             </thead>
             <tbody id="patientBody" class="table-border-bottom-0">
-                @foreach (var item in Model)
+                @foreach (var item in Model.AppointmentViewModel)
                 {
                     <tr class="text-center align-middle">
                         <td>
@@ -63,33 +65,99 @@
                                             data-bs-target=@string.Format("#detailModal{0}", @item.AppointmentId) style="margin: 5px; padding: 5px; border-radius: 4px;">
                                         <i class="fa-solid fa-circle-info"></i> Detail
                                     </button>
-                                }                              
+                                }                           
                                 
                             </div>
                         </td>
                     </tr>
-
-                    <div class="modal fade" id="@string.Format("detailModal{0}", @item.AppointmentId)" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="detailModalLabel">Appointments Detail</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>@item.DoctorName @item.DoctorSurname</p>
-                                    <p>@item.DoctorEmail</p>
-                                    <p>@item.DoctorPhone</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <a class="btn btn-primary" style="color: white" asp-controller="Patient" asp-action="Training" asp-route-id="@item.AppointmentId"> <i class="fa-solid fa-file-audio"></i> &nbsp; Go Trainings</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 }
             </tbody>
         </table>
+
+        @foreach (var item in Model.AppointmentViewModel)
+        {
+            <div class="modal fade" id="@string.Format("detailModal{0}", @item.AppointmentId)" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="detailModalLabel">Appointments Detail</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                             <table class="table table-striped table-bordered">
+                                 <thead>
+                                     <tr class="text-center">
+                                         <th>Doctor Full Name</th>
+                                         <th>Doctor Email</th>
+                                         <th>Doctor Phone</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="patientBody" class="table-border-bottom-0">
+                                     <tr>
+                                         <td>@item.DoctorName @item.DoctorSurname</td>
+                                         <td>@item.DoctorEmail</td>
+                                         <td>@item.DoctorPhone</td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+
+                             <br />
+
+                            <table class="table table-striped table-bordered" style="width: 100%;">
+                                 <thead>
+                                     <tr class="text-center">
+                                        <th style="width: 25%;">Audio Files</th>
+                                         <th>Result</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="patientBody" class="table-border-bottom-0">
+                                    @foreach (var itemAudio in Model.AudioPatientViewModel)
+                                    {
+                                        @if (itemAudio.PatientsAudiosAppId == item.AppointmentId)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <audio controls>
+                                                        <source src="~/@itemAudio.PatientAudioFilePath" type="audio/wav">
+                                                    </audio>
+                                                </td>
+                                                <td>
+                                                    @if (Math.Round(@itemAudio.PatientAudioPercentage, 0) >= 75)
+                                                    {
+                                                        <div class="progress">
+                                                            <div class="progress-bar bg-success" role="progressbar" style="width: @Math.Round(@itemAudio.PatientAudioPercentage, 0)%;" aria-valuenow="@Math.Round(@itemAudio.PatientAudioPercentage, 0)" aria-valuemin="0" aria-valuemax="100">@Math.Round(@itemAudio.PatientAudioPercentage, 0) %</div>
+                                                        </div>
+                                                    }
+                                                    else if (Math.Round(@itemAudio.PatientAudioPercentage, 0) >= 50 && Math.Round(@itemAudio.PatientAudioPercentage, 0) < 75)
+                                                    {
+                                                        <div class="progress">
+                                                            <div class="progress-bar bg-warning" role="progressbar" style="width: @Math.Round(@itemAudio.PatientAudioPercentage, 0)%;" aria-valuenow="@Math.Round(@itemAudio.PatientAudioPercentage, 0)" aria-valuemin="0" aria-valuemax="100">@Math.Round(@itemAudio.PatientAudioPercentage, 0) %</div>
+                                                        </div>
+                                                    }
+                                                    else if (Math.Round(@itemAudio.PatientAudioPercentage, 0) >= 15 && Math.Round(@itemAudio.PatientAudioPercentage, 0) < 50)
+                                                    {
+                                                        <div class="progress">
+                                                            <div class="progress-bar bg-danger" role="progressbar" style="width: @Math.Round(@itemAudio.PatientAudioPercentage, 0)%;" aria-valuenow="@Math.Round(@itemAudio.PatientAudioPercentage, 0)" aria-valuemin="0" aria-valuemax="100">@Math.Round(@itemAudio.PatientAudioPercentage, 0) %</div>
+                                                        </div>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }                                       
+                                    }
+                                   
+                                 </tbody>
+                             </table>
+
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-primary" style="color: white" asp-controller="Patient" asp-action="Training" asp-route-id="@item.AppointmentId"> <i class="fa-solid fa-file-audio"></i> &nbsp; Go Trainings</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        
+
     </div>
 </div>
 
