@@ -13,6 +13,7 @@ namespace khasGraduationProject.Models
         public DbSet<Appointments> appointments { get; set; }
         public DbSet<Audios> audios { get; set; }
         public DbSet<PatientsAudios> patientsAudios { get; set; }
+        public DbSet<AdminDetails> admins { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

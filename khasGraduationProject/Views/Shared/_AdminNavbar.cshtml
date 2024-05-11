@@ -60,7 +60,7 @@
                         <div class="col-lg-3 col-md-3 col-12">
                             <!-- Start Logo -->
                             <div class="logo">
-                                <a asp-area="" asp-controller="Doctor" asp-action="Home">
+                                <a asp-area="" asp-controller="Admin" asp-action="Home">
                                     <img src="~/img/logo.png" alt="#">
                                 </a>
                             </div>
@@ -68,22 +68,6 @@
                             <!-- Mobile Nav -->
                             <div class="mobile-nav"></div>
                             <!-- End Mobile Nav -->
-                        </div>
-                        <div class="col-lg-6 col-md-9 col-12">
-                            <!-- Main Menu -->
-                            <div class="main-menu">
-                                <nav class="navigation">
-                                    <ul class="nav menu">
-                                        <li>
-                                            <a asp-area="" asp-controller="Doctor" asp-action="Home">Home</a>
-                                        </li>
-                                        <li>
-                                            <a asp-area="" asp-controller="Doctor" asp-action="Audios">Upload Audio</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <!--/ End Main Menu -->
                         </div>
                         <div class="col-lg-3 col-12">
                             <ul class="nav menu">
@@ -93,17 +77,11 @@
                                         <i class="icofont-rounded-down"></i>
                                     </a>
                                     <ul class="dropdown">
-                                        <li><a class="btn" asp-area="" asp-controller="Doctor" asp-action="Index">Account Settings</a></li>
                                         <li><a class="btn" data-bs-toggle="modal" data-bs-target="#changePasswordModel">Change Password</a></li>
-                                        <li><a class="btn"  asp-area="" asp-controller="Doctor" asp-action="Logout">Log Out</a> </li>
+                                        <li><a class="btn"  asp-area="" asp-controller="Admin" asp-action="Logout">Log Out</a> </li>
                                     </ul>
                                 </li>
                             </ul>
-
-                            @* <div class="get-quote">
-                               
-                                @* <a asp-area="" asp-controller="Doctor" asp-action="Logout" class="btn">Log Out</a> 
-                            </div> *@
                         </div>
                     </div>
                 </div>
@@ -120,7 +98,7 @@
         </main>
     </div>
 
-    <form id="formDoctorChangePassword" asp-controller="Doctor" asp-action="DoctorChangePassword" method="post">
+    <form id="formDoctorChangePassword" asp-controller="Admin" asp-action="DoctorChangePassword" method="post">
         <div class="modal fade" id="changePasswordModel" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

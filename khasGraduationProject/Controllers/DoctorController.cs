@@ -197,7 +197,7 @@ namespace khasGraduationProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult DoctorSaveChanges(string name, string surname, string email, string password,
+        public IActionResult DoctorSaveChanges(string name, string surname, string email,
            string phone, string states, string gender, string specialization, IFormFile files)
         {
             using (var context = new WebContext())
@@ -219,11 +219,6 @@ namespace khasGraduationProject.Controllers
                     if (!user.email.Equals(email))
                     {
                         user.email = email;
-                    }
-
-                    if (!user.password.Equals(password))
-                    {
-                        user.password = HashPass(password);
                     }
 
                     if (!user.phone.Equals(phone))

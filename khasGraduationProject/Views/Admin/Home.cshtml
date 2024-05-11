@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Admin Panel";
+    Layout = "~/Views/Shared/_AdminNavbar.cshtml";
+}
+
+@model List<DoctorDetails>
+
+<div class="card mb-4 mt-5">
+    <h5 class="card-header">Doctor List</h5>
+    <br>
+    <div class="input-group input-group-merge">
+        <span class="input-group-text">Search</span>
+        <input type="text" id="searchInput" class="form-control">
+    </div>
+    <br />
+
+    <a class="btn btn-primary btn-sm" id="doctorSignUp" asp-area="" asp-controller="Admin" asp-action="SignUp" style="color: white; margin: 5px; padding: 5px; border-radius: 4px;">
+        <i class="fa-solid fa-floppy-disk"></i> New Doctor
+    </a>
+
+   @*  <button type="button" class="btn btn-primary btn-sm" asp-area="" asp-controller="Admin" asp-action="SignUp" style="margin: 5px; padding: 5px; border-radius: 4px;">
+        <i class="fa-solid fa-floppy-disk"></i> New Doctor
+    </button> *@
+
+    <br />
+    <div class="table-responsive text-nowrap">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr class="text-center">
+                    <th>Doctor Full Name</th>
+                    <th>Doctor E-mail</th>
+                    <th>Doctor Phone</th>
+                    <th>Doctor Address</th>
+                </tr>
+            </thead>
+            <tbody id="doctorBody" class="table-border-bottom-0">
+
+                @foreach (var item in Model)
+                {
+                    <tr class="text-center align-middle">
+                        <td>
+                            <ul class="m-0 d-flex align-items-center">
+                                <li class="avatar avatar-xs pull-up">
+                                    <img src="/@item.profileImgPath" alt="Avatar" class="rounded-circle" style="width: 60px;height: 60px;"> &nbsp;&nbsp; @item.name @item.surname
+                                </li>
+                            </ul>
+                        </td>
+                        <td>@item.email</td>
+                        <td>@item.phone</td>
+                        <td>@item.address</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#doctorBody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
