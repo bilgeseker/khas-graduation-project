@@ -1,4 +1,5 @@
-﻿using System.Speech.Recognition;
+﻿using khasGraduationProject.Models;
+using System.Speech.Recognition;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -20,8 +21,24 @@ namespace khasGraduationProject.Controllers
 
             SpeechRecognitionEngine sre = new SpeechRecognitionEngine(info);
 
-            Grammar gr = new DictationGrammar();
-            sre.LoadGrammar(gr);
+            var context = new WebContext();
+            var audiosList = context.audios.ToList();
+
+            List<string> list = new List<string>();
+
+            foreach (var audio in audiosList)
+            {
+                if (!String.IsNullOrEmpty(audio.audioText)) {
+                    list.Add(audio.audioText);
+                }
+            }
+
+            string[] grammarText = list.ToArray();
+            Choices choices = new Choices(grammarText);
+            GrammarBuilder grammarBuilder = new GrammarBuilder(choices);
+            grammarBuilder.Culture = new System.Globalization.CultureInfo("en-US");
+            Grammar grammar = new Grammar(grammarBuilder);
+            sre.LoadGrammar(grammar);
 
             sre.SetInputToWaveFile(filePath);
             sre.BabbleTimeout = new TimeSpan(Int32.MaxValue);
@@ -47,6 +64,41 @@ namespace khasGraduationProject.Controllers
                 finally
                 {
                     sre.UnloadAllGrammars();
+                }
+            }
+
+            if (sb.Length <= 0)
+            {
+                sb.Clear();
+
+                sre = new SpeechRecognitionEngine(info);
+                sre.SetInputToWaveFile(filePath);
+                sre.BabbleTimeout = new TimeSpan(Int32.MaxValue);
+                sre.InitialSilenceTimeout = new TimeSpan(Int32.MaxValue);
+                sre.EndSilenceTimeout = new TimeSpan(100000000);
+                sre.EndSilenceTimeoutAmbiguous = new TimeSpan(100000000);
+
+                Grammar gr = new DictationGrammar();              
+                sre.LoadGrammar(gr);
+
+                while (true)
+                {
+                    try
+                    {
+                        var recText = sre.Recognize();
+                        if (recText == null)
+                            break;
+
+                        sb.Append(recText.Text);
+                    }
+                    catch (Exception ex)
+                    {
+                        break;
+                    }
+                    finally
+                    {
+                        sre.UnloadAllGrammars();
+                    }
                 }
             }
 
