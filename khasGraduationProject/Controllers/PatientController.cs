@@ -386,7 +386,8 @@ namespace khasGraduationProject.Controllers
                         password = hashedPass,
                         location_id = location_id,
                         app_id = 0,
-                        doctor_id = 0
+                        doctor_id = 0,
+                        profileImgPath = "profileImages\\sample_patient.png"
                     };
                     context.patients.Add(newPatient);
                     context.SaveChanges();

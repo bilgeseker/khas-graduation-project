@@ -49,11 +49,16 @@
 
     #goBackBtn {
         background-color: #f5f5f5;
-        color:black;
-        font-size:17px;
+        color: black;
+        font-size: 17px;
     }
-    #goBackBtn:hover{
-        color:white;
+    #dateBackBtn, #dateForwardBtn {
+        background-color: #f5f5f5;
+        color: black;
+        font-size: 14px;
+    }
+    #goBackBtn:hover, #dateBackBtn:hover, #dateForwardBtn:hover {
+        color: white;
     }
     #availableHours{
         width:75%;
@@ -120,22 +125,27 @@
                 });
             }
 
+            var currentIndex = 0;
+            var selectedDoctorId;
 
             function showDoctorSchedule(doctorId) {
+                selectedDoctorId = doctorId;
+                currentIndex = 0;
+                updateSchedule();
+            }
+
+            function updateSchedule() {
                 $('#doctorSchedule').empty();
                 $('#doctorsList').empty();
                 $('#statesList').hide();
                 $('#availableHours').empty();
 
-                selectedDoctorId = doctorId;
-
                 var today = new Date();
-
                 var days = [];
 
-                for (var i = 0; i < 5;) {
+                for (var i = 0; i < 60;) {
                     var day = new Date(today);
-                    var dayIndex = day.getDay(); // Haftanın günlerinden birinin indeksi (0: Pazar, 1: Pazartesi, ..., 6: Cumartesi)
+                    var dayIndex = day.getDay();
                     if (dayIndex > 0 && dayIndex < 6) {
                         var formattedDate = day.getFullYear() + '-' + ('0' + (day.getMonth() + 1)).slice(-2) + '-' + ('0' + day.getDate()).slice(-2);
                         days.push(formattedDate);
@@ -147,15 +157,40 @@
                 var backButton = $('<button id="goBackBtn" class="btn btn-primary mb-5"><i class="fa fa-chevron-left me-2"></i>Go Back</button>');
                 $('#doctorSchedule').append(backButton);
 
+                var buttonContainer = $('<div class="button-container mb-5" style="display: flex; justify-content: end; width: 80%; margin: auto;"></div>');
+                var dateBackButton = $('<button id="dateBackBtn" class="btn btn-primary mb-2"><i class="fa fa-chevron-left me-2"></i>Back</button>');
+                var dateForwardButton = $('<button id="dateForwardBtn" class="btn btn-primary mb-2"><i class="fa fa-chevron-right me-2"></i>Forward</button>');
+
+                buttonContainer.append(dateBackButton);
+                buttonContainer.append(dateForwardButton);
+                $('#doctorSchedule').append(buttonContainer);
+
+                dateBackButton.click(function () {
+                    if (currentIndex > 0) {
+                        currentIndex -= 5;
+                        updateSchedule();
+                    }
+                });
+
+                dateForwardButton.click(function () {
+                    if (currentIndex + 5 < days.length) {
+                        currentIndex += 5;
+                        updateSchedule();
+                    }
+                });
 
                 var daysDiv = $('<div class="days row" style="width:80%; margin:auto;"></div>');
-                $.each(days, function (index, day) {
-                    var dayButton = $('<div class="col-2" style="margin:auto;"><button class="btn btn-outline-primary day" id="'+ day + '">' + day + '</button></div>');
+                var startIndex = currentIndex;
+                var endIndex = Math.min(currentIndex + 5, days.length);
+                for (var i = startIndex; i < endIndex; i++) {
+                    var day = days[i];
+                    var dayButton = $('<div class="col-2" style="margin:auto;"><button class="btn btn-outline-primary day" id="' + day + '">' + day + '</button></div>');
                     dayButton.data('day', day);
                     daysDiv.append(dayButton);
-                });
+                }
                 $('#doctorSchedule').append(daysDiv);
             }
+
 
 
             function showAvailableHours(selectedDay) {
