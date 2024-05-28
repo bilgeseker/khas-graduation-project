@@ -10,6 +10,7 @@ namespace khasGraduationProject.Models
         public int id { get; set; }
 		public string audioFilePath { get; set; }
         public string audioText { get; set; }
+        public string similarText { get; set; }
     }
 }
 

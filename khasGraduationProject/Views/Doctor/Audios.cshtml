@@ -20,6 +20,7 @@
                 <tr class="text-center">
                     <th>Audio</th>
                     <th>Audio Text</th>
+                    <th>Similar Text</th>
                 </tr>
             </thead>
             <tbody id="patientBody" class="table-border-bottom-0">
@@ -35,6 +36,7 @@
 
                         <td>@item.audioText</td>
 
+                        <td>@item.similarText</td>
                     </tr>
                 }
             </tbody>
@@ -55,6 +57,12 @@
                             <span class="input-group-text"><i class="fa-solid fa-font"></i></span>
                             <input class="form-control" type="text" id="audioText" name="audioText" placeholder="Audio Text" required>
                         </div>
+                        <br />
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="fa-solid fa-font"></i></span>
+                            <input class="form-control" type="text" id="similarText" name="similarText" placeholder="Similar Text" required>
+                        </div>
+                        <p class="text-muted mb-0">Write similar texts separated by commas. (exp: december <b style="font-size:22px"> , </b> dec)</p>
                         <br />
                         <div class="input-group input-group-merge">
                             <div class="button-wrapper">

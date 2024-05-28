@@ -330,7 +330,7 @@ namespace khasGraduationProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult AudioSave(string audioText, IFormFile files)
+        public IActionResult AudioSave(string audioText, string similarText, IFormFile files)
         {
             if (files != null && files.Length > 0)
             {
@@ -357,6 +357,7 @@ namespace khasGraduationProject.Controllers
                             var newAudio = new Audios
                             {
                                 audioText = audioText,
+                                similarText = String.IsNullOrEmpty(similarText) ? audioText : similarText,
                                 audioFilePath = Path.Combine("audiosFiles", files.FileName)
                             };
 

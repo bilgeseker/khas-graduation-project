@@ -28,8 +28,12 @@ namespace khasGraduationProject.Controllers
 
             foreach (var audio in audiosList)
             {
-                if (!String.IsNullOrEmpty(audio.audioText)) {
-                    list.Add(audio.audioText);
+                string[] words = audio.similarText.Split(',');
+                foreach (var word in words)
+                {
+                    if (!String.IsNullOrEmpty(word)) {
+                        list.Add(word.TrimStart().TrimEnd());
+                    }
                 }
             }
 
