@@ -338,7 +338,7 @@ namespace khasGraduationProject.Controllers
                 {
                     var webRootPath = _hostingEnvironment.WebRootPath;
 
-                    var filePath = Path.Combine(webRootPath, "profileImages", files.FileName);
+                    var filePath = Path.Combine(webRootPath, "audiosFiles", files.FileName);
 
                     if (!System.IO.File.Exists(filePath))
                     {

@@ -228,7 +228,7 @@ namespace khasGraduationProject.Controllers
                                 }
                             }
 
-                            string text = SpeechManager.AudioToText(filePath);
+                            string text = SpeechManager.AudioToText(filePath, id);
                             double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
 
                             if (!model.patientAudioFilePath.Equals(Path.Combine("patientsAudiosFiles", files.FileName)))
@@ -281,7 +281,7 @@ namespace khasGraduationProject.Controllers
                                 {
                                     if (item.id == id)
                                     {
-                                        string text = SpeechManager.AudioToText(filePath);
+                                        string text = SpeechManager.AudioToText(filePath, item.id);
                                         double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
 
                                         var newPatientsAudios = new PatientsAudios

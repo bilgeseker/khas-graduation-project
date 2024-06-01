@@ -7,7 +7,7 @@ namespace khasGraduationProject.Controllers
 {
     public static class SpeechManager
     {
-        public static string AudioToText(string filePath)
+        public static string AudioToText(string filePath, int audio_id)
         {
             RecognizerInfo info = null;
             foreach (RecognizerInfo ri in SpeechRecognitionEngine.InstalledRecognizers())
@@ -22,17 +22,17 @@ namespace khasGraduationProject.Controllers
             SpeechRecognitionEngine sre = new SpeechRecognitionEngine(info);
 
             var context = new WebContext();
-            var audiosList = context.audios.ToList();
+            var audiosList = context.audios.Where(audio => audio.id == audio_id).ToList();
 
             List<string> list = new List<string>();
 
             foreach (var audio in audiosList)
             {
-                string[] words = audio.similarText.Split(',');
+                string[] words = audio.similarText.Split(','); 
                 foreach (var word in words)
                 {
                     if (!String.IsNullOrEmpty(word)) {
-                        list.Add(word.TrimStart().TrimEnd());
+                        list.Add(word.TrimStart().TrimEnd()); // it cancels trim
                     }
                 }
             }
