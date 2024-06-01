@@ -217,6 +217,7 @@
                     success: function (response) {
                         if (!response.available) {
                             $('#' + hour.replace(/:/g, '')).prop('disabled', true);
+                            $('#' + hour.replace(/:/g, '')).css('text-decoration', 'line-through');
                         }
                     },
                     error: function () {
@@ -279,6 +280,7 @@
                             $('#modal').modal('hide');
                             alert('Appointment approved!!');
                             $('#' + selectedHour.replace(/:/g, '')).prop('disabled', true);
+                            $('#' + hour.replace(/:/g, '')).css('text-decoration', 'line-through');
                         }
                     },
                     error: function () {

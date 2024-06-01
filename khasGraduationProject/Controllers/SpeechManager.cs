@@ -109,66 +109,59 @@ namespace khasGraduationProject.Controllers
             return sb.ToString();
         }
 
-        // Compares the two strings based on letter pair matches
-        public static double CompareStrings(string str1, string str2)
+        public static double matchStrings(string firstString, string secondString)
         {
-            List<string> pairs1 = WordLetterPairs(str1.ToUpper());
-            List<string> pairs2 = WordLetterPairs(str2.ToUpper());
+            List<string> firstStringCouple = wordCharacterCouple(firstString.ToUpper());
+            List<string> secondStringCouple = wordCharacterCouple(secondString.ToUpper());
 
-            int intersection = 0;
-            int union = pairs1.Count + pairs2.Count;
+            int intersectionCount = 0;
+            int unionCount = firstStringCouple.Count + secondStringCouple.Count;
 
-            for (int i = 0; i < pairs1.Count; i++)
+            for (int i = 0; i < firstStringCouple.Count; i++)
             {
-                for (int j = 0; j < pairs2.Count; j++)
+                for (int j = 0; j < secondStringCouple.Count; j++)
                 {
-                    if (pairs1[i] == pairs2[j])
+                    if (firstStringCouple[i] == secondStringCouple[j])
                     {
-                        intersection++;
-                        pairs2.RemoveAt(j); // Must remove the match to prevent "AAAA" from appearing to match "AA" with 100% success
+                        intersectionCount++;
+                        secondStringCouple.RemoveAt(j);
                         break;
                     }
                 }
             }
 
-            return (2.0 * intersection * 100) / union; //returns in percentage
-                                                       //return (2.0 * intersection) / union; //returns in score from 0 to 1
+            return (2.0 * intersectionCount * 100) / unionCount;
         }
 
-        // Gets all letter pairs for each
-        private static List<string> WordLetterPairs(string str)
+        private static List<string> wordCharacterCouple(string inputString)
         {
-            List<string> AllPairs = new List<string>();
+            List<string> allCharacterCouple = new List<string>();
 
-            // Tokenize the string and put the tokens/words into an array
-            string[] Words = Regex.Split(str, @"\s");
+            string[] words = Regex.Split(inputString, @"\s");
 
-            // For each word
-            for (int w = 0; w < Words.Length; w++)
+            for (int i = 0; i < words.Length; i++)
             {
-                if (!string.IsNullOrEmpty(Words[w]))
+                if (!string.IsNullOrEmpty(words[i]))
                 {
-                    // Find the pairs of characters
-                    String[] PairsInWord = LetterPairs(Words[w]);
+                    String[] pairsInWord = characterCouple(words[i]);
 
-                    for (int p = 0; p < PairsInWord.Length; p++)
+                    for (int j = 0; j < pairsInWord.Length; j++)
                     {
-                        AllPairs.Add(PairsInWord[p]);
+                        allCharacterCouple.Add(pairsInWord[j]);
                     }
                 }
             }
-            return AllPairs;
+            return allCharacterCouple;
         }
 
-        // Generates an array containing every two consecutive letters in the input string
-        private static string[] LetterPairs(string str)
+        private static string[] characterCouple(string word)
         {
-            int numPairs = str.Length - 1;
-            string[] pairs = new string[numPairs];
+            int numberOfCouple = word.Length - 1;
+            string[] pairs = new string[numberOfCouple];
 
-            for (int i = 0; i < numPairs; i++)
+            for (int i = 0; i < numberOfCouple; i++)
             {
-                pairs[i] = str.Substring(i, 2);
+                pairs[i] = word.Substring(i, 2);
             }
             return pairs;
         }

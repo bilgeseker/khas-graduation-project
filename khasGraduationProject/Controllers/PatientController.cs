@@ -229,7 +229,7 @@ namespace khasGraduationProject.Controllers
                             }
 
                             string text = SpeechManager.AudioToText(filePath, id);
-                            double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
+                            double calcPercentage = SpeechManager.matchStrings(audioModel.audioText, text);
 
                             if (!model.patientAudioFilePath.Equals(Path.Combine("patientsAudiosFiles", files.FileName)))
                             {
@@ -282,7 +282,7 @@ namespace khasGraduationProject.Controllers
                                     if (item.id == id)
                                     {
                                         string text = SpeechManager.AudioToText(filePath, item.id);
-                                        double calcPercentage = SpeechManager.CompareStrings(audioModel.audioText, text);
+                                        double calcPercentage = SpeechManager.matchStrings(audioModel.audioText, text);
 
                                         var newPatientsAudios = new PatientsAudios
                                         {
@@ -588,7 +588,7 @@ namespace khasGraduationProject.Controllers
                 var data = context.appointments.FirstOrDefault(u => u.doctor_id == doctorId && 
                                                                 u.date == formattedDate && 
                                                                 u.time == formattedTime && 
-                                                                u.patient_id == user_id && 
+                                                                //u.patient_id == user_id && 
                                                                 u.isCancelled == false);
                 if (data != null) //&& data.isCancelled != true
                 {
